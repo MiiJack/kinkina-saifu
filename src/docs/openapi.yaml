@@ -1,0 +1,129 @@
+openapi: 3.0.3
+info:
+  title: KinkinaSaifu API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api/v1
+paths:
+  /account:
+    get:
+      summary: Returns a list of all accounts
+      responses:
+        '200':
+          description: A list of accounts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Account'
+    post:
+      summary: Creates a new account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Account'
+      responses:
+        '201':
+          description: Account created
+  /account/{id}:
+    get:
+      summary: Returns an account by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: An account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+  /transaction:
+    get:
+      summary: Returns a list of all transactions
+      responses:
+        '200':
+          description: A list of transactions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transaction'
+    post:
+      summary: Creates a new transaction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Transaction'
+      responses:
+        '201':
+          description: Transaction created
+  /transaction/{id}:
+    get:
+      summary: Returns a transaction by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A transaction
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+    delete:
+      summary: Deletes a transaction by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Transaction deleted
+components:
+  schemas:
+    Account:
+      type: object
+      properties:
+        id:
+          type: integer
+        principalCurrency:
+          $ref: '#/components/schemas/Currency'
+        name:
+          type: string
+    Currency:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        code:
+          type: string
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: integer
+        account:
+          $ref: '#/components/schemas/Account'
+        amount:
+          type: number
+          format: float
+        transactionDate:
+          type: string
+          format: date-time
