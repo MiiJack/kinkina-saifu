@@ -1,13 +1,11 @@
 package mg.fita.kinkinasaifu;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import mg.fita.kinkinasaifu.connection.ConnectionDB;
 
-@SpringBootApplication
 public class KinkinaSaifuApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(KinkinaSaifuApplication.class, args);
+		ConnectionDB.getConnection();
 	}
 
 }
