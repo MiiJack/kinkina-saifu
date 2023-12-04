@@ -1,7 +1,6 @@
 package mg.fita.kinkinasaifu.model;
 
 import lombok.*;
-import java.util.Currency;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
