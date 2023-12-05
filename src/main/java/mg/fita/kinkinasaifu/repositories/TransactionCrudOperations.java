@@ -7,15 +7,18 @@ import java.sql.*;
 import java.util.*;
 
 public class TransactionCrudOperations{
-    private static final String FIND_ALL_QUERY = "SELECT * FROM \"transaction\"";
-    private static final String FIND_BY_ID_QUERY = "SELECT * FROM \"transaction\" WHERE id = ?";
-    private static final String SAVE_QUERY = "INSERT INTO \"transaction\" (id, account_id, amount, transaction_date) VALUES (?, ?, ?, ?)";
-    private static final String DELETE_QUERY = "DELETE FROM \"transaction\" WHERE id = ?";
+    private Connection connection;
+    public TransactionCrudOperations() {
+        this.connection = ConnectionDB.getConnection();
+    }
+    private static final String FIND_ALL_QUERY = "SELECT * FROM transaction";
+    private static final String FIND_BY_ID_QUERY = "SELECT * FROM transaction WHERE id = ?";
+    private static final String SAVE_QUERY = "INSERT INTO transaction (id, account_id, amount, transaction_date) VALUES (?, ?, ?, ?)";
+    private static final String DELETE_QUERY = "DELETE FROM transaction WHERE id = ?";
 
     public List<Transaction> findAll() {
         List<Transaction> transactions = new ArrayList<>();
-        try (Connection connection = ConnectionDB.getConnection();
-             PreparedStatement statement = connection.prepareStatement(FIND_ALL_QUERY);
+        try (PreparedStatement statement = connection.prepareStatement(FIND_ALL_QUERY);
              ResultSet resultSet = statement.executeQuery()) {
             while (resultSet.next()) {
                 transactions.add(mapToTransaction(resultSet));
@@ -28,8 +31,7 @@ public class TransactionCrudOperations{
 
     public Transaction findById(int id) {
         Transaction transaction = null;
-        try (Connection connection = ConnectionDB.getConnection();
-             PreparedStatement statement = connection.prepareStatement(FIND_BY_ID_QUERY)) {
+        try (PreparedStatement statement = connection.prepareStatement(FIND_BY_ID_QUERY)) {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
@@ -43,8 +45,7 @@ public class TransactionCrudOperations{
     }
 
     public Transaction save(Transaction transaction) {
-        try (Connection connection = ConnectionDB.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SAVE_QUERY)) {
+        try (PreparedStatement statement = connection.prepareStatement(SAVE_QUERY)) {
             statement.setInt(1, transaction.getId());
             statement.setInt(2, transaction.getAccount().getId());
             statement.setBigDecimal(3, transaction.getAmount());
@@ -62,8 +63,7 @@ public class TransactionCrudOperations{
     }
 
     public void delete(int id) {
-        try (Connection connection = ConnectionDB.getConnection();
-             PreparedStatement statement = connection.prepareStatement(DELETE_QUERY)) {
+        try (PreparedStatement statement = connection.prepareStatement(DELETE_QUERY)) {
             statement.setInt(1, id);
             statement.executeUpdate();
         } catch (SQLException e) {

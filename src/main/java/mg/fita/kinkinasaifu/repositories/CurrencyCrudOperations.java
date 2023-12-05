@@ -6,12 +6,15 @@ import mg.fita.kinkinasaifu.model.Currency;
 import java.sql.*;
 
 public class CurrencyCrudOperations {
+    private Connection connection;
+    public CurrencyCrudOperations() {
+        this.connection = ConnectionDB.getConnection();
+    }
     private static final String FIND_BY_ID_QUERY = "SELECT * FROM \"currency\" WHERE id = ?";
 
     public Currency findById(int id) {
         Currency currency = null;
-        try (Connection connection = ConnectionDB.getConnection();
-             PreparedStatement statement = connection.prepareStatement(FIND_BY_ID_QUERY)) {
+        try (PreparedStatement statement = connection.prepareStatement(FIND_BY_ID_QUERY)) {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {

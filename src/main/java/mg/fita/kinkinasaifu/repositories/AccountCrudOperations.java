@@ -8,6 +8,11 @@ import java.sql.*;
 import java.util.*;
 
 public class AccountCrudOperations{
+    private Connection connection;
+
+    public AccountCrudOperations() {
+        this.connection = ConnectionDB.getConnection();
+    }
     private static final String FIND_ALL_QUERY = "SELECT * FROM \"account\"";
     private static final String FIND_BY_ID_QUERY = "SELECT * FROM \"account\" WHERE id = ?";
     private static final String SAVE_QUERY = "INSERT INTO \"account\" (id, principal_currency_id, name) VALUES (?, ?, ?)";
@@ -15,8 +20,7 @@ public class AccountCrudOperations{
 
     public List<Account> findAll() {
         List<Account> accounts = new ArrayList<>();
-        try (Connection connection = ConnectionDB.getConnection();
-             PreparedStatement statement = connection.prepareStatement(FIND_ALL_QUERY);
+        try (PreparedStatement statement = connection.prepareStatement(FIND_ALL_QUERY);
              ResultSet resultSet = statement.executeQuery()) {
             while (resultSet.next()) {
                 accounts.add(mapToAccount(resultSet));
@@ -29,8 +33,7 @@ public class AccountCrudOperations{
 
     public Account findById(int id) {
         Account account = null;
-        try (Connection connection = ConnectionDB.getConnection();
-             PreparedStatement statement = connection.prepareStatement(FIND_BY_ID_QUERY)) {
+        try (PreparedStatement statement = connection.prepareStatement(FIND_BY_ID_QUERY)) {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
@@ -44,10 +47,9 @@ public class AccountCrudOperations{
     }
 
     public Account save(Account account) {
-        try (Connection connection = ConnectionDB.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SAVE_QUERY)) {
+        try (PreparedStatement statement = connection.prepareStatement(SAVE_QUERY)) {
             statement.setInt(1, account.getId());
-            statement.setString(2, account.getPrincipalCurrency().toString());
+            statement.setInt(2, account.getPrincipalCurrency().getId());
             statement.setString(3, account.getName());
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -61,8 +63,7 @@ public class AccountCrudOperations{
         return toSave;
     }
 /*    public void delete(int id) {
-        try (Connection connection = ConnectionDB.getConnection();
-             PreparedStatement statement = connection.prepareStatement(DELETE_QUERY)) {
+        try (PreparedStatement statement = connection.prepareStatement(DELETE_QUERY)) {
             statement.setInt(1, id);
             statement.executeUpdate();
         } catch (SQLException e) {
