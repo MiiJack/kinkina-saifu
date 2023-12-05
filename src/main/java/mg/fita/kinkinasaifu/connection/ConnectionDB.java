@@ -15,7 +15,6 @@ public class ConnectionDB {
         try {
             connection = DriverManager.getConnection(url, user, password);
             System.out.println("Connection successfull !");
-            connection.close();
         } catch (SQLException e) {
             System.err.println("Error connecting to the PostgreSQL database: " + e.getMessage());
         }
