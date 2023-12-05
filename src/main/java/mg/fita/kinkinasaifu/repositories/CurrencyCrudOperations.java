@@ -1,6 +1,6 @@
 package mg.fita.kinkinasaifu.repositories;
 
-import mg.fita.kinkinasaifu.Configuration.DatabaseConfiguration;
+import mg.fita.kinkinasaifu.connection.ConnectionDB;
 import mg.fita.kinkinasaifu.model.Currency;
 
 import java.sql.*;
@@ -10,7 +10,7 @@ public class CurrencyCrudOperations {
 
     public Currency findById(int id) {
         Currency currency = null;
-        try (Connection connection = DatabaseConfiguration.getConnection();
+        try (Connection connection = ConnectionDB.getConnection();
              PreparedStatement statement = connection.prepareStatement(FIND_BY_ID_QUERY)) {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {

@@ -1,6 +1,6 @@
 package mg.fita.kinkinasaifu.repositories;
 
-import mg.fita.kinkinasaifu.Configuration.DatabaseConfiguration;
+import mg.fita.kinkinasaifu.connection.ConnectionDB;
 import mg.fita.kinkinasaifu.model.*;
 
 import java.sql.*;
@@ -14,7 +14,7 @@ public class TransactionCrudOperations{
 
     public List<Transaction> findAll() {
         List<Transaction> transactions = new ArrayList<>();
-        try (Connection connection = DatabaseConfiguration.getConnection();
+        try (Connection connection = ConnectionDB.getConnection();
              PreparedStatement statement = connection.prepareStatement(FIND_ALL_QUERY);
              ResultSet resultSet = statement.executeQuery()) {
             while (resultSet.next()) {
@@ -28,7 +28,7 @@ public class TransactionCrudOperations{
 
     public Transaction findById(int id) {
         Transaction transaction = null;
-        try (Connection connection = DatabaseConfiguration.getConnection();
+        try (Connection connection = ConnectionDB.getConnection();
              PreparedStatement statement = connection.prepareStatement(FIND_BY_ID_QUERY)) {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -43,7 +43,7 @@ public class TransactionCrudOperations{
     }
 
     public Transaction save(Transaction transaction) {
-        try (Connection connection = DatabaseConfiguration.getConnection();
+        try (Connection connection = ConnectionDB.getConnection();
              PreparedStatement statement = connection.prepareStatement(SAVE_QUERY)) {
             statement.setInt(1, transaction.getId());
             statement.setInt(2, transaction.getAccount().getId());
@@ -62,7 +62,7 @@ public class TransactionCrudOperations{
     }
 
     public void delete(int id) {
-        try (Connection connection = DatabaseConfiguration.getConnection();
+        try (Connection connection = ConnectionDB.getConnection();
              PreparedStatement statement = connection.prepareStatement(DELETE_QUERY)) {
             statement.setInt(1, id);
             statement.executeUpdate();
