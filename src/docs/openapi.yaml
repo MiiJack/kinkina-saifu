@@ -322,6 +322,10 @@ components:
         transactionType:
           type: string
           enum: [debit, credit]
+        sender:
+          type: string
+        receiver:
+          type: string
 
     Currency:
       type: object
