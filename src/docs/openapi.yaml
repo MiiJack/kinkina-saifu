@@ -282,17 +282,30 @@ components:
       properties:
         id:
           type: integer
-        principalCurrency:
-          $ref: '#/components/schemas/Currency'
         name:
           type: string
+          enum: [Savings , Current]
+        balance:
+          $ref: '#/components/schemas/Balance'
         transactions:
           type: array
           items:
             $ref: '#/components/schemas/Transaction'
+        currency:
+          $ref: '#/components/schemas/Currency'
         type:
           type: string
           enum: [Bank, Cash, Mobile Money]
+
+    Balance:
+      type: object
+      properties:
+        value:
+          type: number
+          format: double
+        modificationDate:
+          type: string
+          format: date-time
 
     Transaction:
       type: object
