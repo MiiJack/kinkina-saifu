@@ -120,6 +120,28 @@ components:
           $ref: '#/components/schemas/Currency'
         name:
           type: string
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Transaction'
+        type:
+          type: string
+          enum: [Bank, Cash, Mobile Money]
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: string
+        label:
+          type: string
+        amount:
+          type: number
+        dateTime:
+          type: string
+          format: date-time
+        transactionType:
+          type: string
+          enum: [debit, credit]
     Currency:
       type: object
       properties:
