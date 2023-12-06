@@ -128,7 +128,17 @@ components:
         name:
           type: string
         code:
-          type: string
+          allOf:
+            - $ref: '#/components/schemas/CurrencyCode'
+    CurrencyCode:
+      type: string
+      enum:
+        - USD
+        - EUR
+        - JPY
+        - GBP
+        - CAD
+        - MGA
     Transaction:
       type: object
       properties:
