@@ -17,6 +17,9 @@ paths:
         - Accounts
       summary: Returns a list of all accounts
       operationId: getAllAccount
+      parameters:
+        - $ref: "#/components/parameters/queryPage"
+        - $ref: "#/components/parameters/queryPageSize"
       responses:
         '200':
           description: A list of accounts
@@ -65,6 +68,9 @@ paths:
         - Transactions
       summary: Returns a list of all transactions
       operationId: getAllTransactions
+      parameters:
+        - $ref: "#/components/parameters/queryPage"
+        - $ref: "#/components/parameters/queryPageSize"
       responses:
         '200':
           description: A list of transactions
@@ -122,6 +128,25 @@ paths:
         '204':
           description: Transaction deleted
 components:
+  parameters:
+    queryPage:
+      name: page
+      in: query
+      required: false
+      schema:
+        description: "Page number for pagination. Used as 1 by default if no value is provided."
+        type: integer
+        default: 1
+
+    queryPageSize:
+      name: pageSize
+      in: query
+      required: false
+      schema:
+        description: "Number of items per page. Used as 50 by default if no value is provided."
+        type: integer
+        default: 50
+
   schemas:
     Account:
       type: object
@@ -139,6 +164,7 @@ components:
         type:
           type: string
           enum: [Bank, Cash, Mobile Money]
+
     Transaction:
       type: object
       properties:
@@ -154,6 +180,7 @@ components:
         transactionType:
           type: string
           enum: [debit, credit]
+
     Currency:
       type: object
       properties:
@@ -164,6 +191,7 @@ components:
         code:
           allOf:
             - $ref: '#/components/schemas/CurrencyCode'
+
     CurrencyCode:
       type: string
       enum:
