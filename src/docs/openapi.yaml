@@ -22,13 +22,14 @@ paths:
         - $ref: "#/components/parameters/queryPageSize"
       responses:
         '200':
-          description: A list of accounts
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Account'
+          $ref: '#/components/responses/OK200Account'
+        '400':
+          $ref: '#/components/responses/BadRequest400'
+        '403':
+          $ref: '#/components/responses/Forbidden403'
+        '500':
+          $ref: '#/components/responses/InternalServerError500'
+
     put:
       tags:
         - Accounts
@@ -41,8 +42,15 @@ paths:
             schema:
               $ref: '#/components/schemas/Account'
       responses:
-        '201':
-          description: Account created
+        '200':
+          $ref: '#/components/responses/OK200Account'
+        '400':
+          $ref: '#/components/responses/BadRequest400'
+        '403':
+          $ref: '#/components/responses/Forbidden403'
+        '500':
+          $ref: '#/components/responses/InternalServerError500'
+
   /account/{id}:
     get:
       tags:
@@ -57,11 +65,14 @@ paths:
             type: integer
       responses:
         '200':
-          description: An account
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Account'
+          $ref: '#/components/responses/OK200Account'
+        '400':
+          $ref: '#/components/responses/BadRequest400'
+        '403':
+          $ref: '#/components/responses/Forbidden403'
+        '500':
+          $ref: '#/components/responses/InternalServerError500'
+
   /transaction:
     get:
       tags:
@@ -73,13 +84,14 @@ paths:
         - $ref: "#/components/parameters/queryPageSize"
       responses:
         '200':
-          description: A list of transactions
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Transaction'
+          $ref: '#/components/responses/OK200Transaction'
+        '400':
+          $ref: '#/components/responses/BadRequest400'
+        '403':
+          $ref: '#/components/responses/Forbidden403'
+        '500':
+          $ref: '#/components/responses/InternalServerError500'
+
     put:
       tags:
         - Transactions
@@ -92,8 +104,15 @@ paths:
             schema:
               $ref: '#/components/schemas/Transaction'
       responses:
-        '201':
-          description: Transaction created
+        '200':
+          $ref: '#/components/responses/OK200Transaction'
+        '400':
+          $ref: '#/components/responses/BadRequest400'
+        '403':
+          $ref: '#/components/responses/Forbidden403'
+        '500':
+          $ref: '#/components/responses/InternalServerError500'
+
   /transaction/{id}:
     get:
       tags:
@@ -108,11 +127,14 @@ paths:
             type: integer
       responses:
         '200':
-          description: A transaction
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Transaction'
+          $ref: '#/components/responses/OK200Transaction'
+        '400':
+          $ref: '#/components/responses/BadRequest400'
+        '403':
+          $ref: '#/components/responses/Forbidden403'
+        '500':
+          $ref: '#/components/responses/InternalServerError500'
+
     delete:
       tags:
         - Transactions
@@ -125,9 +147,70 @@ paths:
           schema:
             type: integer
       responses:
-        '204':
-          description: Transaction deleted
+        '200':
+          $ref: '#/components/responses/OK200Transaction'
+        '400':
+          $ref: '#/components/responses/BadRequest400'
+        '403':
+          $ref: '#/components/responses/Forbidden403'
+        '500':
+          $ref: '#/components/responses/InternalServerError500'
+
 components:
+  responses:
+    OK200Account:
+      description: The request has succeeded
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SuccessResponseAccount'
+
+    OK200Transaction:
+      description: The request has succeeded
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SuccessResponseTransaction'
+
+    BadRequest400:
+      description: The server cannot process the request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            status:
+              code: 400
+              message: "Bad request"
+            body:
+              error: "Invalid input data"
+
+    Forbidden403:
+      description: The server refused the request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            status:
+              code: 403
+              message: "Forbidden"
+            body:
+              error: "Access denied"
+
+    InternalServerError500:
+      description: The server encountered an unexpected error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            status:
+              code: 500
+              message: "Internal server error"
+            body:
+              error: "An unexpected error occurred on the server"
+
   parameters:
     queryPage:
       name: page
@@ -148,6 +231,52 @@ components:
         default: 50
 
   schemas:
+    Response:
+      type: object
+      properties:
+        status:
+          type: object
+          properties:
+            code:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: "The request has succeeded"
+        body:
+          type: object
+
+    SuccessResponseAccount:
+      allOf:
+        - $ref: '#/components/schemas/Response'
+        - type: object
+          properties:
+            body:
+              type: array
+              items:
+                $ref: '#/components/schemas/Account'
+
+    SuccessResponseTransaction:
+      allOf:
+        - $ref: '#/components/schemas/Response'
+        - type: object
+          properties:
+            body:
+              type: array
+              items:
+                $ref: '#/components/schemas/Transaction'
+
+    ErrorResponse:
+      allOf:
+        - $ref: '#/components/schemas/Response'
+        - type: object
+          properties:
+            body:
+              type: object
+              properties:
+                error:
+                  type: string
+
     Account:
       type: object
       properties:
