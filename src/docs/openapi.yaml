@@ -1,16 +1,22 @@
 openapi: 3.0.3
 info:
   title: KinkinaSaifu API
-  version: 1.0.0
+  version: 1.0.1
   description: STD22079 - STD22028
 servers:
   - url: http://localhost:8080/api/v1
+tags:
+  - name: Accounts
+    description: Account related endpoint
+  - name: Transactions
+    description: Transaction related endpoint
 paths:
   /account:
     get:
       tags:
         - Accounts
       summary: Returns a list of all accounts
+      operationId: getAllAccount
       responses:
         '200':
           description: A list of accounts
@@ -24,6 +30,7 @@ paths:
       tags:
         - Accounts
       summary: Creates a new account
+      operationId: createAccount
       requestBody:
         required: true
         content:
@@ -38,6 +45,7 @@ paths:
       tags:
         - Accounts
       summary: Returns an account by id
+      operationId: getAccountById
       parameters:
         - name: id
           in: path
@@ -56,6 +64,7 @@ paths:
       tags:
         - Transactions
       summary: Returns a list of all transactions
+      operationId: getAllTransactions
       responses:
         '200':
           description: A list of transactions
@@ -69,6 +78,7 @@ paths:
       tags:
         - Transactions
       summary: Creates a new transaction
+      operationId: createTransaction
       requestBody:
         required: true
         content:
@@ -83,6 +93,7 @@ paths:
       tags:
         - Transactions
       summary: Returns a transaction by id
+      operationId: getTransactionById
       parameters:
         - name: id
           in: path
@@ -100,6 +111,7 @@ paths:
       tags:
         - Transactions
       summary: Deletes a transaction by id
+      operationId: deleteTransactionById
       parameters:
         - name: id
           in: path
