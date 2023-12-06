@@ -7,6 +7,9 @@ import lombok.*;
 @EqualsAndHashCode
 public class Account {
     private int id;
-    private Currency principalCurrency;
     private String name;
+    private Balance balance;
+    private Transaction transaction;
+    private Currency currency;
+    private String type;
 }
