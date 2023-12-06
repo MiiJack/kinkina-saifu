@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: KinkinaSaifu API
-  version: 1.0.1
+  version: 1.1.0
   description: STD22079 - STD22028
 servers:
   - url: http://localhost:8080/api/v1
@@ -26,11 +26,11 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Account'
-    post:
+    put:
       tags:
         - Accounts
-      summary: Creates a new account
-      operationId: createAccount
+      summary: Create or update an (list of) account
+      operationId: crupdateAccount
       requestBody:
         required: true
         content:
@@ -74,11 +74,11 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Transaction'
-    post:
+    put:
       tags:
         - Transactions
-      summary: Creates a new transaction
-      operationId: createTransaction
+      summary: Create or update a (list of) transaction
+      operationId: crupdateTransaction
       requestBody:
         required: true
         content:
