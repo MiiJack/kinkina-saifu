@@ -2,16 +2,16 @@ package mg.fita.kinkinasaifu.model;
 
 import lombok.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @EqualsAndHashCode
 public class Transaction {
     private int id;
-    private Account account;
-    private BigDecimal amount;
-    private LocalDateTime transactionDate;
+    private String label;
+    private Double amount;
+    private LocalDateTime dateTime;
+    private String transactionType;
+    private String sender;
+    private String receiver;
 }
