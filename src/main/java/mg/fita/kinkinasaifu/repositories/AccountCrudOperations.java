@@ -15,7 +15,7 @@ public class AccountCrudOperations{
     }
     private static final String FIND_ALL_QUERY = "SELECT * FROM \"account\"";
     private static final String FIND_BY_ID_QUERY = "SELECT * FROM \"account\" WHERE id = ?";
-    private static final String SAVE_QUERY = "INSERT INTO \"account\" (id, principal_currency_id, name) VALUES (?, ?, ?)";
+    private static final String SAVE_QUERY = "INSERT INTO \"account\" (name, type, currency_id) VALUES (?, ?, ?)";
     /*private static final String DELETE_QUERY = "DELETE FROM \"account\" WHERE id = ?";*/
 
     public List<Account> findAll() {
@@ -48,15 +48,16 @@ public class AccountCrudOperations{
 
     public Account save(Account account) {
         try (PreparedStatement statement = connection.prepareStatement(SAVE_QUERY)) {
-            statement.setInt(1, account.getId());
-            statement.setInt(2, account.getPrincipalCurrency().getId());
-            statement.setString(3, account.getName());
+            statement.setObject(1, account.getName(), java.sql.Types.OTHER);
+            statement.setObject(2, account.getType(), java.sql.Types.OTHER);
+            statement.setInt(3, account.getCurrency().getId());
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return account;
     }
+
 
     public List<Account> saveAll(List<Account> toSave) {
         toSave.forEach(this::save);
@@ -72,12 +73,21 @@ public class AccountCrudOperations{
     } */
 
     private Account mapToAccount(ResultSet resultSet) throws SQLException {
-        CurrencyCrudOperations currencyCrudOperations = new CurrencyCrudOperations();
-        Currency principalCurrency = currencyCrudOperations.findById(resultSet.getInt("principal_currency_id"));
+        OtherCrudOperations otherCrudOperations = new OtherCrudOperations();
+        TransactionCrudOperations transactionCrudOperations = new TransactionCrudOperations();
+
+        Currency currency = otherCrudOperations.findById(resultSet.getInt("currency_id"));
+        Balance balance = otherCrudOperations.findMostRecentBalance(resultSet.getInt("id"));
+        List<Transaction> transactions = transactionCrudOperations.findAllByAccountId(resultSet.getInt("id"));
+
         return new Account(
-                resultSet.getInt("id"),
-                principalCurrency,
-                resultSet.getString("name")
+            resultSet.getInt("id"),
+            resultSet.getString("name"),
+            balance,
+            transactions,
+            currency,
+            resultSet.getString("type")
         );
     }
+
 }
