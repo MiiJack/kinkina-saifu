@@ -13,8 +13,10 @@ public class TransactionCrudOperations{
     }
     private static final String FIND_ALL_QUERY = "SELECT * FROM transaction";
     private static final String FIND_BY_ID_QUERY = "SELECT * FROM transaction WHERE id = ?";
-    private static final String SAVE_QUERY = "INSERT INTO transaction (id, account_id, amount, transaction_date) VALUES (?, ?, ?, ?)";
+    private static final String SAVE_QUERY = "INSERT INTO transaction (id, label, amount, type, date_time, sender, receiver)" +
+            " VALUES (?, ?, ?, ?, ?, ?, ?)";
     private static final String DELETE_QUERY = "DELETE FROM transaction WHERE id = ?";
+    private static final String FIND_ALL_BY_ACCOUNT_ID_QUERY = "SELECT * FROM transaction WHERE id =?";
 
     public List<Transaction> findAll() {
         List<Transaction> transactions = new ArrayList<>();
@@ -44,12 +46,33 @@ public class TransactionCrudOperations{
         return transaction;
     }
 
+    public List<Transaction> findAllByAccountId(int accountId) {
+        List<Transaction> transactions = new ArrayList<>();
+
+        try (PreparedStatement statement = connection.prepareStatement(FIND_ALL_BY_ACCOUNT_ID_QUERY)) {
+            statement.setInt(1, accountId);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    transactions.add(mapToTransaction(resultSet));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return transactions;
+    }
+
     public Transaction save(Transaction transaction) {
         try (PreparedStatement statement = connection.prepareStatement(SAVE_QUERY)) {
             statement.setInt(1, transaction.getId());
-            statement.setInt(2, transaction.getAccount().getId());
-            statement.setBigDecimal(3, transaction.getAmount());
-            statement.setTimestamp(4, java.sql.Timestamp.valueOf(transaction.getTransactionDate()));
+            statement.setString(2, transaction.getLabel());
+            statement.setDouble(3, transaction.getAmount());
+            statement.setObject(4, transaction.getTransactionType(), java.sql.Types.OTHER);
+            statement.setTimestamp(5, java.sql.Timestamp.valueOf(transaction.getDateTime()));
+            statement.setString(6, transaction.getSender());
+            statement.setString(7, transaction.getReceiver());
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -72,13 +95,15 @@ public class TransactionCrudOperations{
     }
 
     private Transaction mapToTransaction(ResultSet resultSet) throws SQLException {
-        AccountCrudOperations accountCrudOperations = new AccountCrudOperations();
-        Account account = accountCrudOperations.findById(resultSet.getInt("account_id"));
         return new Transaction(
-                resultSet.getInt("id"),
-                account,
-                resultSet.getBigDecimal("amount"),
-                resultSet.getTimestamp("transaction_date").toLocalDateTime()
+            resultSet.getInt("id"),
+            resultSet.getString("label"),
+            resultSet.getDouble("amount"),
+            resultSet.getTimestamp("date_time").toLocalDateTime(),
+            resultSet.getString("type"),
+            resultSet.getString("sender"),
+            resultSet.getString("receiver")
         );
     }
+
 }

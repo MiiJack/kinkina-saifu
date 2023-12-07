@@ -5,6 +5,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Data
+@AllArgsConstructor
 @EqualsAndHashCode
 public class Transaction {
     private int id;
