@@ -35,4 +35,12 @@ public class ColumnLabel {
         public static final String TRANSACTION_ID = "transaction_id";
     }
 
+    public class TransferHistoryTable {
+        public static final String ID = "id";
+        public static final String DEBTOR_TRANSACTION_ID = "debtor_transaction_id";
+        public static final String CREDITOR_TRANSACTION_ID = "creditor_transaction_id";
+        public static final String TRANSFER_DATE_TIME = "transfer_date_time";
+
+    }
+
 }
