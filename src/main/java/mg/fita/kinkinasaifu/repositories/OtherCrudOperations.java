@@ -4,6 +4,8 @@ import mg.fita.kinkinasaifu.connection.ConnectionDB;
 import mg.fita.kinkinasaifu.model.*;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class OtherCrudOperations {
     private Connection connection;
@@ -13,6 +15,7 @@ public class OtherCrudOperations {
     private static final String FIND_CURRENCY_BY_ID_QUERY = "SELECT * FROM \"currency\" WHERE id = ?";
     private static final String FIND_MOST_RECENT_BALANCE_BY_ACCOUNT_ID_QUERY = "SELECT * FROM \"balance\" WHERE account_id = ? " +
             "ORDER BY modification_date DESC LIMIT 1";
+    private static final String FIND_ALL_BALANCE_BY_ACCOUNT_ID_QUERY = "SELECT * FROM balance WHERE account_id =?";
 
     private static final String SAVE_BALANCE_QUERY = "INSERT INTO \"balance\" " +
             "(account_id, value, modification_date) VALUES (?, ?, ?)";
@@ -53,6 +56,24 @@ public class OtherCrudOperations {
         return balance;
     }
 
+    public List<Balance> findAllByAccountId(int accountId) {
+        List<Balance> balances = new ArrayList<>();
+
+        try (PreparedStatement statement = connection.prepareStatement(FIND_ALL_BALANCE_BY_ACCOUNT_ID_QUERY)) {
+            statement.setInt(1, accountId);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    balances.add(mapToBalance(resultSet));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return balances;
+    }
+
     public void saveBalance(Balance balance, int account_id) {
         try (PreparedStatement statement = connection.prepareStatement(SAVE_BALANCE_QUERY)) {
             statement.setInt(1, account_id);
@@ -62,5 +83,12 @@ public class OtherCrudOperations {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private Balance mapToBalance(ResultSet resultSet) throws SQLException {
+        return new Balance(
+            resultSet.getDouble("value"),
+            resultSet.getTimestamp("modification_date").toLocalDateTime()
+        );
     }
 }
