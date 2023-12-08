@@ -90,4 +90,20 @@ public class OtherCrudOperations {
             resultSet.getTimestamp(ColumnLabel.BalanceTable.MODIFICATION_DATE).toLocalDateTime()
         );
     }
+
+    public double getConversionRate(int sourceCurrencyId, int targetCurrencyId) {
+        double conversionRate = 0.0;
+        try (PreparedStatement statement = connection.prepareStatement("SELECT rate FROM CurrencyValue WHERE source_currency_id = ? AND target_currency_id = ?")) {
+            statement.setInt(1, sourceCurrencyId);
+            statement.setInt(2, targetCurrencyId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                   conversionRate = resultSet.getDouble("rate");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return conversionRate;
+    }
 }
