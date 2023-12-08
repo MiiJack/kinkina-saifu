@@ -49,3 +49,12 @@ CREATE TABLE IF NOT EXISTS "account_transaction" (
     transaction_id INT REFERENCES "transaction"(id),
     PRIMARY KEY (account_id, transaction_id)
 );
+
+-- TransferHistory table
+CREATE TABLE IF NOT EXISTS "transfer_history"(
+    id SERIAL PRIMARY KEY,
+    debtor_currency_id INT REFERENCES "currency"(id),
+    creditor_currency_id INT REFERENCES "currency"(id),
+    amount DOUBLE PRECISION DEFAULT 0,
+    transfer_date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

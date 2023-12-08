@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
-@EqualsAndHashCode
+@NoArgsConstructor
 public class Transaction {
     private int id;
     private String label;
