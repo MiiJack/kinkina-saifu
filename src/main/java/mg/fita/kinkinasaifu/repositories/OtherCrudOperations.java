@@ -14,8 +14,8 @@ public class OtherCrudOperations {
         this.connection = ConnectionDB.getConnection();
     }
     private static final String FIND_CURRENCY_BY_ID_QUERY = "SELECT * FROM \"currency\" WHERE id = ?";
-    private static final String FIND_MOST_RECENT_BALANCE_BY_ACCOUNT_ID_QUERY = "SELECT * FROM \"balance\" WHERE account_id = ? " +
-            "ORDER BY modification_date DESC LIMIT 1";
+    private static final String FIND_MOST_RECENT_BALANCE_BY_ACCOUNT_ID_QUERY = "SELECT * FROM \"balance\" " +
+            "WHERE account_id = ? ORDER BY modification_date DESC LIMIT 1";
     private static final String FIND_ALL_BALANCE_BY_ACCOUNT_ID_QUERY = "SELECT * FROM balance WHERE account_id =?";
     private static final String SAVE_BALANCE_QUERY = "INSERT INTO \"balance\" " +
             "(account_id, value, modification_date) VALUES (?, ?, ?)";
@@ -50,7 +50,8 @@ public class OtherCrudOperations {
                 if (resultSet.next()) {
                     balance = new Balance();
                     balance.setValue(resultSet.getDouble(ColumnLabel.BalanceTable.VALUE));
-                    balance.setModificationDate(resultSet.getTimestamp(ColumnLabel.BalanceTable.MODIFICATION_DATE).toLocalDateTime());
+                    balance.setModificationDate(resultSet
+                            .getTimestamp(ColumnLabel.BalanceTable.MODIFICATION_DATE).toLocalDateTime());
                 }
             }
         } catch (SQLException e) {
@@ -88,9 +89,12 @@ public class OtherCrudOperations {
                 while (resultSet.next()) {
                     TransferHistory transferHistory = new TransferHistory();
                     transferHistory.setId(resultSet.getInt(ColumnLabel.TransferHistoryTable.ID));
-                    transferHistory.setDebtorTransactionId(resultSet.getInt(ColumnLabel.TransferHistoryTable.DEBTOR_TRANSACTION_ID));
-                    transferHistory.setCreditorTransactionId(resultSet.getInt(ColumnLabel.TransferHistoryTable.CREDITOR_TRANSACTION_ID));
-                    transferHistory.setTransferDateTime(resultSet.getTimestamp(ColumnLabel.TransferHistoryTable.TRANSFER_DATE_TIME).toLocalDateTime());
+                    transferHistory.setDebtorCurrencyId(resultSet
+                            .getInt(ColumnLabel.TransferHistoryTable.DEBTOR_TRANSACTION_ID));
+                    transferHistory.setCreditorCurrencyId(resultSet
+                            .getInt(ColumnLabel.TransferHistoryTable.CREDITOR_TRANSACTION_ID));
+                    transferHistory.setTransferDateTime(resultSet
+                            .getTimestamp(ColumnLabel.TransferHistoryTable.TRANSFER_DATE_TIME).toLocalDateTime());
                     transferHistories.add(transferHistory);
                 }
             }
