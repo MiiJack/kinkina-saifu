@@ -16,7 +16,6 @@ public class OtherCrudOperations {
     private static final String FIND_MOST_RECENT_BALANCE_BY_ACCOUNT_ID_QUERY = "SELECT * FROM \"balance\" WHERE account_id = ? " +
             "ORDER BY modification_date DESC LIMIT 1";
     private static final String FIND_ALL_BALANCE_BY_ACCOUNT_ID_QUERY = "SELECT * FROM balance WHERE account_id =?";
-
     private static final String SAVE_BALANCE_QUERY = "INSERT INTO \"balance\" " +
             "(account_id, value, modification_date) VALUES (?, ?, ?)";
 
@@ -46,8 +45,8 @@ public class OtherCrudOperations {
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     balance = new Balance();
-                    balance.setValue(resultSet.getDouble("value"));
-                    balance.setModificationDate(resultSet.getTimestamp("modification_date").toLocalDateTime());
+                    balance.setValue(resultSet.getDouble(ColumnLabel.BalanceTable.VALUE));
+                    balance.setModificationDate(resultSet.getTimestamp(ColumnLabel.BalanceTable.MODIFICATION_DATE).toLocalDateTime());
                 }
             }
         } catch (SQLException e) {
@@ -87,8 +86,8 @@ public class OtherCrudOperations {
 
     private Balance mapToBalance(ResultSet resultSet) throws SQLException {
         return new Balance(
-            resultSet.getDouble("value"),
-            resultSet.getTimestamp("modification_date").toLocalDateTime()
+            resultSet.getDouble(ColumnLabel.BalanceTable.VALUE),
+            resultSet.getTimestamp(ColumnLabel.BalanceTable.MODIFICATION_DATE).toLocalDateTime()
         );
     }
 }

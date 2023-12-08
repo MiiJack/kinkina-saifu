@@ -96,13 +96,13 @@ public class TransactionCrudOperations{
 
     private Transaction mapToTransaction(ResultSet resultSet) throws SQLException {
         return new Transaction(
-            resultSet.getInt("id"),
-            resultSet.getString("label"),
-            resultSet.getDouble("amount"),
-            resultSet.getTimestamp("date_time").toLocalDateTime(),
-            resultSet.getString("type"),
-            resultSet.getString("sender"),
-            resultSet.getString("receiver")
+            resultSet.getInt(ColumnLabel.TransactionTable.ID),
+            resultSet.getString(ColumnLabel.TransactionTable.LABEL),
+            resultSet.getDouble(ColumnLabel.TransactionTable.AMOUNT),
+            resultSet.getTimestamp(ColumnLabel.TransactionTable.DATE_TIME).toLocalDateTime(),
+            resultSet.getString(ColumnLabel.TransactionTable.TYPE),
+            resultSet.getString(ColumnLabel.TransactionTable.SENDER),
+            resultSet.getString(ColumnLabel.TransactionTable.RECEIVER)
         );
     }
 

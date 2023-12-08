@@ -3,6 +3,7 @@ package mg.fita.kinkinasaifu.repositories;
 import mg.fita.kinkinasaifu.connection.ConnectionDB;
 import mg.fita.kinkinasaifu.model.*;
 import mg.fita.kinkinasaifu.model.Currency;
+import mg.fita.kinkinasaifu.model.ColumnLabel;
 
 import java.sql.*;
 import java.util.*;
@@ -76,17 +77,17 @@ public class AccountCrudOperations{
         OtherCrudOperations otherCrudOperations = new OtherCrudOperations();
         TransactionCrudOperations transactionCrudOperations = new TransactionCrudOperations();
 
-        Currency currency = otherCrudOperations.findById(resultSet.getInt("currency_id"));
-        Balance balance = otherCrudOperations.findMostRecentBalance(resultSet.getInt("id"));
-        List<Transaction> transactions = transactionCrudOperations.findAllByAccountId(resultSet.getInt("id"));
+        Currency currency = otherCrudOperations.findById(resultSet.getInt(ColumnLabel.AccountTable.CURRENCY_ID));
+        Balance balance = otherCrudOperations.findMostRecentBalance(resultSet.getInt(ColumnLabel.AccountTable.ID));
+        List<Transaction> transactions = transactionCrudOperations.findAllByAccountId(resultSet.getInt(ColumnLabel.TransactionTable.ID));
 
         return new Account(
-            resultSet.getInt("id"),
-            resultSet.getString("name"),
+            resultSet.getInt(ColumnLabel.AccountTable.ID),
+            resultSet.getString(ColumnLabel.AccountTable.NAME),
             balance,
             transactions,
             currency,
-            resultSet.getString("type")
+            resultSet.getString(ColumnLabel.AccountTable.TYPE)
         );
     }
 
