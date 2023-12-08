@@ -5,6 +5,7 @@ import mg.fita.kinkinasaifu.repositories.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BalanceService {
     OtherCrudOperations otherCrudOperations = new OtherCrudOperations();
@@ -23,4 +24,16 @@ public class BalanceService {
         // If the given date and time is after all balance modification dates, return the latest balance
         return balances.get(balances.size() - 1);
     }
+
+    public List<Balance> getBalanceHistory(Account account, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        // Get the list of balances sorted by modification date
+        List<Balance> balances = otherCrudOperations.findAllByAccountId(account.getId());
+
+        // Filter the balances within the given date and time range
+        return balances.stream()
+                .filter(balance -> balance.getModificationDate().isAfter(startDateTime) && balance.getModificationDate().isBefore(endDateTime))
+                .collect(Collectors.toList());
+    }
+
+
 }
