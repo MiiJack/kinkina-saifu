@@ -1,5 +1,7 @@
 package mg.fita.kinkinasaifu.model;
 
+import java.time.LocalDateTime;
+
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -7,12 +9,10 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
 public class TransferHistory {
-    private int id;
-    private int debtorTransactionId;
-    private int creditorTransactionId;
+    private Integer id;
+    private Integer debtorTransactionId;
+    private Integer creditorTransactionId;
     private LocalDateTime transferDateTime;
-
 }
-
-
