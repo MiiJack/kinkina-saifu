@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 public class TransferHistory {
     private Integer id;
-    private Integer debitorCurrrencyId;
-    private Integer creditorCurrencyId;
-    private LocalDateTime transferDate;
+    private Integer debtorTransactionId;
+    private Integer creditorTransactionId;
+    private LocalDateTime transferDateTime;
 }
