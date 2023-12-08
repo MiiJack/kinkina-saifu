@@ -4,6 +4,7 @@ import mg.fita.kinkinasaifu.connection.ConnectionDB;
 import mg.fita.kinkinasaifu.model.*;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +19,9 @@ public class OtherCrudOperations {
     private static final String FIND_ALL_BALANCE_BY_ACCOUNT_ID_QUERY = "SELECT * FROM balance WHERE account_id =?";
     private static final String SAVE_BALANCE_QUERY = "INSERT INTO \"balance\" " +
             "(account_id, value, modification_date) VALUES (?, ?, ?)";
+    
+    private static final String TRANSFER_HISTORY_INTERVAL = "SELECT * FROM \"transfer_history\" " +
+            "WHERE transfer_date_time BETWEEN ? AND ?";
 
     public Currency findById(int id) {
         Currency currency = null;
@@ -71,6 +75,30 @@ public class OtherCrudOperations {
         }
 
         return balances;
+    }
+
+    public List<TransferHistory> findAllByTransferDateTimeBetween(LocalDateTime start, LocalDateTime end) {
+        List<TransferHistory> transferHistories = new ArrayList<>();
+
+        try (PreparedStatement statement = connection.prepareStatement(TRANSFER_HISTORY_INTERVAL)) {
+            statement.setTimestamp(1, Timestamp.valueOf(start));
+            statement.setTimestamp(2, Timestamp.valueOf(end));
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    TransferHistory transferHistory = new TransferHistory();
+                    transferHistory.setId(resultSet.getInt(ColumnLabel.TransferHistoryTable.ID));
+                    transferHistory.setDebtorTransactionId(resultSet.getInt(ColumnLabel.TransferHistoryTable.DEBTOR_TRANSACTION_ID));
+                    transferHistory.setCreditorTransactionId(resultSet.getInt(ColumnLabel.TransferHistoryTable.CREDITOR_TRANSACTION_ID));
+                    transferHistory.setTransferDateTime(resultSet.getTimestamp(ColumnLabel.TransferHistoryTable.TRANSFER_DATE_TIME).toLocalDateTime());
+                    transferHistories.add(transferHistory);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return transferHistories;
     }
 
     public void saveBalance(Balance balance, int account_id) {
