@@ -133,7 +133,7 @@ public class OtherCrudOperations {
              statement.setInt(2, targetCurrencyId);
              try (ResultSet resultSet = statement.executeQuery()) {
                  if (resultSet.next()) {
-                     currencyValue = resultSet.getDouble("value");
+                     currencyValue = resultSet.getDouble(ColumnLabel.CurrencyValueTable.VALUE);
                  }
              }
          } catch (SQLException e) {

@@ -39,7 +39,17 @@ public class ColumnLabel {
         public static final String ID = "id";
         public static final String DEBTOR_TRANSACTION_ID = "debtor_transaction_id";
         public static final String CREDITOR_TRANSACTION_ID = "creditor_transaction_id";
+        public static final String AMOUNT ="amount";
         public static final String TRANSFER_DATE_TIME = "transfer_date_time";
+
+    }
+
+    public class CurrencyValueTable{
+        public static final String ID = "id";
+        public static final String SOURCE_CURRENCY_ID = "source_currency_id";
+        public static final String TARGET_CURRENCY_ID = "target_currency_id";
+        public static final String VALUE = "value";
+        public static final String EFFECTIVE_DATE = "effective_date";
 
     }
 
