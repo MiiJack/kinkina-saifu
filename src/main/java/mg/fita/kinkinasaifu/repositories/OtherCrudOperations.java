@@ -14,17 +14,10 @@ public class OtherCrudOperations {
         this.connection = ConnectionDB.getConnection();
     }
     private static final String FIND_CURRENCY_BY_ID_QUERY = "SELECT * FROM \"currency\" WHERE id = ?";
-    private static final String FIND_MOST_RECENT_BALANCE_BY_ACCOUNT_ID_QUERY = "SELECT * FROM \"balance\" " +
-            "WHERE account_id = ? ORDER BY modification_date DESC LIMIT 1";
-    private static final String FIND_ALL_BALANCE_BY_ACCOUNT_ID_QUERY = "SELECT * FROM balance WHERE account_id =?";
-    private static final String SAVE_BALANCE_QUERY = "INSERT INTO \"balance\" " +
-            "(account_id, value, modification_date) VALUES (?, ?, ?)";
-    
     private static final String TRANSFER_HISTORY_INTERVAL = "SELECT * FROM \"transfer_history\" " +
-            "WHERE transfer_date_time BETWEEN ? AND ?";
-
+        "WHERE transfer_date_time BETWEEN ? AND ?";
     private static final String GET_MOST_RECENT_CURRENCY_VALUE = "SELECT value FROM \"currency_value\" WHERE source_currency_id = ? " +
-            "AND target_currency_id = ? ORDER BY effective_date LIMIT 1";
+        "AND target_currency_id = ? ORDER BY effective_date LIMIT 1";
 
     public Currency findById(int id) {
         Currency currency = null;
@@ -43,42 +36,6 @@ public class OtherCrudOperations {
             e.printStackTrace();
         }
         return currency;
-    }
-
-    public Balance findMostRecentBalance(int account_id) {
-        Balance balance = null;
-        try (PreparedStatement statement = connection.prepareStatement(FIND_MOST_RECENT_BALANCE_BY_ACCOUNT_ID_QUERY)) {
-            statement.setInt(1, account_id);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    balance = new Balance();
-                    balance.setValue(resultSet.getDouble(ColumnLabel.BalanceTable.VALUE));
-                    balance.setModificationDate(resultSet
-                            .getTimestamp(ColumnLabel.BalanceTable.MODIFICATION_DATE).toLocalDateTime());
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return balance;
-    }
-
-    public List<Balance> findAllByAccountId(int accountId) {
-        List<Balance> balances = new ArrayList<>();
-
-        try (PreparedStatement statement = connection.prepareStatement(FIND_ALL_BALANCE_BY_ACCOUNT_ID_QUERY)) {
-            statement.setInt(1, accountId);
-
-            try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    balances.add(mapToBalance(resultSet));
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return balances;
     }
 
     public List<TransferHistory> findAllByTransferDateTimeBetween(LocalDateTime start, LocalDateTime end) {
@@ -106,24 +63,6 @@ public class OtherCrudOperations {
         }
 
         return transferHistories;
-    }
-
-    public void saveBalance(Balance balance, int account_id) {
-        try (PreparedStatement statement = connection.prepareStatement(SAVE_BALANCE_QUERY)) {
-            statement.setInt(1, account_id);
-            statement.setDouble(2, balance.getValue());
-            statement.setTimestamp(3, Timestamp.valueOf(balance.getModificationDate()));
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private Balance mapToBalance(ResultSet resultSet) throws SQLException {
-        return new Balance(
-            resultSet.getDouble(ColumnLabel.BalanceTable.VALUE),
-            resultSet.getTimestamp(ColumnLabel.BalanceTable.MODIFICATION_DATE).toLocalDateTime()
-        );
     }
 
      public double getCurrencyValue (int sourceCurrencyId, int targetCurrencyId) {

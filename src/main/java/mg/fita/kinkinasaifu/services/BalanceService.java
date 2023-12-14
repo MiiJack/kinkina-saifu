@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class BalanceService {
-    OtherCrudOperations otherCrudOperations = new OtherCrudOperations();
+    BalanceCrudOperations balanceCrudOperations = new BalanceCrudOperations();
     public Balance getBalanceAtDateTime(Account account, LocalDateTime dateTime) {
 
         // Get the list of balances sorted by modification date
-        List<Balance> balances = otherCrudOperations.findAllByAccountId(account.getId());
+        List<Balance> balances = balanceCrudOperations.findAllByAccountId(account.getId());
 
         // Find the balance immediately before the given date and time
         for (int i = 0; i < balances.size(); i++) {
@@ -27,7 +27,7 @@ public class BalanceService {
 
     public List<Balance> getBalanceHistory(Account account, LocalDateTime startDateTime, LocalDateTime endDateTime) {
         // Get the list of balances sorted by modification date
-        List<Balance> balances = otherCrudOperations.findAllByAccountId(account.getId());
+        List<Balance> balances = balanceCrudOperations.findAllByAccountId(account.getId());
 
         // Filter the balances within the given date and time range
         return balances.stream()
