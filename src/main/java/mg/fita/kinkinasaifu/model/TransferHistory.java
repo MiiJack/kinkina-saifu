@@ -10,7 +10,7 @@ import lombok.*;
 @Setter
 public class TransferHistory {
     private Integer id;
-    private Integer debtorCurrencyId;
-    private Integer creditorCurrencyId;
+    private Integer debtorTransferId;
+    private Integer creditorTransferId;
     private LocalDateTime transferDateTime;
 }
