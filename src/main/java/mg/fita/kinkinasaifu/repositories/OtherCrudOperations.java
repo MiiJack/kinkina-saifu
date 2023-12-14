@@ -23,6 +23,9 @@ public class OtherCrudOperations {
     private static final String TRANSFER_HISTORY_INTERVAL = "SELECT * FROM \"transfer_history\" " +
             "WHERE transfer_date_time BETWEEN ? AND ?";
 
+    private static final String GET_MOST_RECENT_CURRENCY_VALUE = "SELECT value FROM \"currency_value\" WHERE source_currency_id = ? " +
+            "AND target_currency_id = ? ORDER BY effective_date LIMIT 1";
+
     public Currency findById(int id) {
         Currency currency = null;
         try (PreparedStatement statement = connection.prepareStatement(FIND_CURRENCY_BY_ID_QUERY)) {
@@ -89,9 +92,9 @@ public class OtherCrudOperations {
                 while (resultSet.next()) {
                     TransferHistory transferHistory = new TransferHistory();
                     transferHistory.setId(resultSet.getInt(ColumnLabel.TransferHistoryTable.ID));
-                    transferHistory.setDebtorCurrencyId(resultSet
+                    transferHistory.setDebtorTransferId(resultSet
                             .getInt(ColumnLabel.TransferHistoryTable.DEBTOR_TRANSACTION_ID));
-                    transferHistory.setCreditorCurrencyId(resultSet
+                    transferHistory.setCreditorTransferId(resultSet
                             .getInt(ColumnLabel.TransferHistoryTable.CREDITOR_TRANSACTION_ID));
                     transferHistory.setTransferDateTime(resultSet
                             .getTimestamp(ColumnLabel.TransferHistoryTable.TRANSFER_DATE_TIME).toLocalDateTime());
@@ -123,19 +126,19 @@ public class OtherCrudOperations {
         );
     }
 
-    // public double getConversionRate(int sourceCurrencyId, int targetCurrencyId) {
-    //     double conversionRate = 0.0;
-    //     try (PreparedStatement statement = connection.prepareStatement("SELECT rate FROM CurrencyValue WHERE source_currency_id = ? AND target_currency_id = ?")) {
-    //         statement.setInt(1, sourceCurrencyId);
-    //         statement.setInt(2, targetCurrencyId);
-    //         try (ResultSet resultSet = statement.executeQuery()) {
-    //             if (resultSet.next()) {
-    //                conversionRate = resultSet.getDouble("rate");
-    //             }
-    //         }
-    //     } catch (SQLException e) {
-    //         e.printStackTrace();
-    //     }
-    //     return conversionRate;
-    // }
+     public double getCurrencyValue (int sourceCurrencyId, int targetCurrencyId) {
+         double currencyValue = 0.0;
+         try (PreparedStatement statement = connection.prepareStatement(GET_MOST_RECENT_CURRENCY_VALUE)) {
+             statement.setInt(1, sourceCurrencyId);
+             statement.setInt(2, targetCurrencyId);
+             try (ResultSet resultSet = statement.executeQuery()) {
+                 if (resultSet.next()) {
+                     currencyValue = resultSet.getDouble("value");
+                 }
+             }
+         } catch (SQLException e) {
+             e.printStackTrace();
+         }
+         return currencyValue;
+     }
 }
