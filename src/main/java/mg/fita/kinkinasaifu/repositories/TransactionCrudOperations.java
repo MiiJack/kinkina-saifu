@@ -102,7 +102,8 @@ public class TransactionCrudOperations{
             resultSet.getTimestamp(ColumnLabel.TransactionTable.DATE_TIME).toLocalDateTime(),
             resultSet.getString(ColumnLabel.TransactionTable.TYPE),
             resultSet.getString(ColumnLabel.TransactionTable.SENDER),
-            resultSet.getString(ColumnLabel.TransactionTable.RECEIVER)
+            resultSet.getString(ColumnLabel.TransactionTable.RECEIVER),
+            (Category) resultSet.getObject(ColumnLabel.TransactionTable.CATEGORY)
         );
     }
 

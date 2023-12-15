@@ -17,4 +17,8 @@ public class Account {
     public void setBalance(Balance balance) {
         this.balance = balance;
     }
+
+    public Category getCategory() {
+        return null;
+    }
 }

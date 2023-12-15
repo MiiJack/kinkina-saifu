@@ -15,4 +15,5 @@ public class Transaction {
     private String transactionType;
     private String sender;
     private String receiver;
+    private Category category;
 }

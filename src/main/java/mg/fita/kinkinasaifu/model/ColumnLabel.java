@@ -28,6 +28,7 @@ public class ColumnLabel {
         public static final String TYPE = "type";
         public static final String SENDER = "sender";
         public static final String RECEIVER = "receiver";
+        public static final String CATEGORY = "category";
     }
 
     public class AccountTransactionTable {
