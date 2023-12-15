@@ -66,4 +66,4 @@ CREATE TABLE IF NOT EXISTS "currency_value"(
     target_currency_id INT REFERENCES "currency"(id),
     value DOUBLE PRECISION DEFAULT 0,
     effective_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)
+);
