@@ -1,8 +1,8 @@
 package mg.fita.kinkinasaifu.services;
 
+import jakarta.annotation.Nullable;
 import mg.fita.kinkinasaifu.model.*;
 import mg.fita.kinkinasaifu.repositories.*;
-import mg.fita.kinkinasaifu.services.*;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -17,14 +17,23 @@ public class TransactionService {
     TransferHistoryCrudOperations transferHistoryCrudOperations = new TransferHistoryCrudOperations();
     AccountService accountService = new AccountService();
 
-    public Transaction findLatestTransaction(int accountId) {
+    public Transaction findLatestTransaction(int accountId, @Nullable LocalDateTime date) {
         List<Transaction> transactions = transactionCrudOperations.findAllByAccountId(accountId);
         if (transactions.isEmpty()) {
             return null;
         }
-        return Collections.max(transactions, Comparator.comparingInt(Transaction::getId));
+        if (date == null) {
+            return Collections.max(transactions, Comparator.comparingInt(Transaction::getId));
+        }
+        return transactions.stream()
+                .filter(transaction -> transaction.getDateTime().toLocalDate().equals(date.toLocalDate()))
+                .max(Comparator.comparing(Transaction::getDateTime))
+                .orElse(null);
     }
 
+    public Transaction findLatestTransaction(int accountId) {
+        return findLatestTransaction(accountId, null);
+    }
 
     public void transferMoney(Account senderAccount, Account receiverAccount, double amount) {
         if (senderAccount.getId() == receiverAccount.getId()) {
