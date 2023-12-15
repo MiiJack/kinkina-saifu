@@ -53,8 +53,20 @@ CREATE TABLE IF NOT EXISTS "account_transaction" (
 -- TransferHistory table
 CREATE TABLE IF NOT EXISTS "transfer_history"(
     id SERIAL PRIMARY KEY,
-    debtor_currency_id INT REFERENCES "currency"(id),
-    creditor_currency_id INT REFERENCES "currency"(id),
+    debtor_transaction_id INT REFERENCES "transaction"(id),
+    creditor_transaction_id INT REFERENCES "transaction"(id),
     amount DOUBLE PRECISION DEFAULT 0,
     transfer_date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- CurrencyValue table
+CREATE TABLE IF NOT EXISTS "currency_value"(
+    id SERIAL PRIMARY KEY,
+    source_currency_id INT REFERENCES "currency"(id),
+    target_currency_id INT REFERENCES "currency"(id),
+    value DOUBLE PRECISION DEFAULT 0,
+    effective_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+ALTER TABLE transaction
+ADD COLUMN category VARCHAR(255);

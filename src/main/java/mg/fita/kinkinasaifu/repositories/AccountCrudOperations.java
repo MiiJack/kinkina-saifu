@@ -75,10 +75,11 @@ public class AccountCrudOperations{
 
     private Account mapToAccount(ResultSet resultSet) throws SQLException {
         OtherCrudOperations otherCrudOperations = new OtherCrudOperations();
+        BalanceCrudOperations balanceCrudOperations = new BalanceCrudOperations();
         TransactionCrudOperations transactionCrudOperations = new TransactionCrudOperations();
 
         Currency currency = otherCrudOperations.findById(resultSet.getInt(ColumnLabel.AccountTable.CURRENCY_ID));
-        Balance balance = otherCrudOperations.findMostRecentBalance(resultSet.getInt(ColumnLabel.AccountTable.ID));
+        Balance balance = balanceCrudOperations.findMostRecentBalance(resultSet.getInt(ColumnLabel.AccountTable.ID));
         List<Transaction> transactions = transactionCrudOperations.findAllByAccountId(resultSet.getInt(ColumnLabel.TransactionTable.ID));
 
         return new Account(

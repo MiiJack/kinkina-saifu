@@ -7,9 +7,13 @@ import java.time.LocalDateTime;
 
 public class AccountService {
     AccountCrudOperations accountCrudOperations = new AccountCrudOperations();
+    TransactionCrudOperations transactionCrudOperations = new TransactionCrudOperations();
     public Account performTransaction(Account account, Transaction transaction) {
         account.getTransactions().add(transaction);
         Balance balance = account.getBalance();
+        if (!account.getType().equals("Bank") && account.getBalance().getValue().compareTo(transaction.getAmount()) < 0) {
+            throw new RuntimeException("Insufficient funds for transaction");
+        }
         if (transaction.getTransactionType().equals("Debit")) {
             balance.setValue(balance.getValue() - transaction.getAmount());
         } else if (transaction.getTransactionType().equals("Credit")) {
@@ -18,8 +22,8 @@ public class AccountService {
 
         balance.setModificationDate(LocalDateTime.now());
 
-        // Save the updated account to the database
         accountCrudOperations.save(account);
+        transactionCrudOperations.save(transaction);
         return accountCrudOperations.findById(account.getId());
     }
 

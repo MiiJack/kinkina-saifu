@@ -16,14 +16,13 @@ public class TransferHistoryCrudOperations {
         this.connection = ConnectionDB.getConnection();
     }
     private static final String SAVE_TRANSFER_HISTORY = "INSERT INTO \"transfer_history\"" +
-            "(debtor_currency_id, creditor_currency_id , transfer_date_time) VALUES (?, ?, ?)";
+            "(debtor_transaction_id, creditor_transaction_id , transfer_date_time) VALUES (?, ?, ?)";
     private static final String FIND_ALL_TRANSFER_HISTORY_WITHIN_RANGE = "SELECT * FROM \"transfer_history\" " +
             "WHERE transfer_date_time >= ? AND transfer_date_time < ?";
-
     public TransferHistory save(TransferHistory transferHistory) {
         try (PreparedStatement statement = connection.prepareStatement(SAVE_TRANSFER_HISTORY)) {
-            statement.setInt(1, transferHistory.getDebtorCurrencyId());
-            statement.setInt(2, transferHistory.getCreditorCurrencyId());
+            statement.setInt(1, transferHistory.getDebtorTransferId());
+            statement.setInt(2, transferHistory.getCreditorTransferId());
             statement.setTimestamp(3, java.sql.Timestamp.valueOf(transferHistory.getTransferDateTime()));
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -42,9 +41,9 @@ public class TransferHistoryCrudOperations {
                 while (resultSet.next()) {
                     TransferHistory transferHistory = new TransferHistory();
                     transferHistory.setId(resultSet.getInt(ColumnLabel.TransferHistoryTable.ID));
-                    transferHistory.setDebtorCurrencyId(resultSet
+                    transferHistory.setDebtorTransferId(resultSet
                             .getInt(ColumnLabel.TransferHistoryTable.DEBTOR_TRANSACTION_ID));
-                    transferHistory.setCreditorCurrencyId(resultSet
+                    transferHistory.setCreditorTransferId(resultSet
                             .getInt(ColumnLabel.TransferHistoryTable.CREDITOR_TRANSACTION_ID));
                     transferHistory.setTransferDateTime(resultSet
                             .getTimestamp(ColumnLabel.TransferHistoryTable.TRANSFER_DATE_TIME).toLocalDateTime());

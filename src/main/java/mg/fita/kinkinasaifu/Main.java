@@ -13,6 +13,7 @@ public class Main {
 
         // Create repository objects
         AccountCrudOperations accountCrudOperations = new AccountCrudOperations();
+        BalanceCrudOperations balanceCrudOperations = new BalanceCrudOperations();
         TransactionCrudOperations transactionCrudOperations = new TransactionCrudOperations();
         OtherCrudOperations otherCrudOperations = new OtherCrudOperations();
 
@@ -22,10 +23,10 @@ public class Main {
         Balance balance1 = new Balance(3500.00, LocalDateTime.now());
         Balance balance2 = new Balance(200.00, LocalDateTime.now());
         Transaction transaction1 = new Transaction(6, "Testing N1", 1000.00, LocalDateTime.now(),
-                "Debit", null, null);
+                "Debit", null, null, Category.COMMUNICATION_PC);
         Account account1 = new Account(6, "Savings", balance1, List.of(transaction1), currency6, "Bank");
         Transaction transaction2 = new Transaction(7, "Testing N2", 700.00, LocalDateTime.now(),
-                "Credit", null, null);
+                "Credit", null, null, Category.FOOD_DRINKS);
         Account account2 = new Account(7, "Current", balance2, List.of(transaction2,transaction1), currency5, "Cash");
 
         // Test save methods
@@ -33,8 +34,8 @@ public class Main {
         transactionCrudOperations.save(transaction1);
         accountCrudOperations.save(account2);
         transactionCrudOperations.save(transaction2);
-        otherCrudOperations.saveBalance(balance1,account1.getId());
-        otherCrudOperations.saveBalance(balance2,account2.getId());
+        balanceCrudOperations.saveBalance(balance1,account1.getId());
+        balanceCrudOperations.saveBalance(balance2,account2.getId());
 
         // Test findAll methods
         List<Account> allAccounts = accountCrudOperations.findAll();
