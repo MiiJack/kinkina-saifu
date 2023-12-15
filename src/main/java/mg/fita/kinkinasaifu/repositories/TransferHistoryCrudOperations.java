@@ -16,10 +16,9 @@ public class TransferHistoryCrudOperations {
         this.connection = ConnectionDB.getConnection();
     }
     private static final String SAVE_TRANSFER_HISTORY = "INSERT INTO \"transfer_history\"" +
-            "(debtor_currency_id, creditor_currency_id , transfer_date_time) VALUES (?, ?, ?)";
+            "(debtor_transaction_id, creditor_transaction_id , transfer_date_time) VALUES (?, ?, ?)";
     private static final String FIND_ALL_TRANSFER_HISTORY_WITHIN_RANGE = "SELECT * FROM \"transfer_history\" " +
             "WHERE transfer_date_time >= ? AND transfer_date_time < ?";
-
     public TransferHistory save(TransferHistory transferHistory) {
         try (PreparedStatement statement = connection.prepareStatement(SAVE_TRANSFER_HISTORY)) {
             statement.setInt(1, transferHistory.getDebtorTransferId());
