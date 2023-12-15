@@ -2,7 +2,6 @@ package mg.fita.kinkinasaifu.services;
 
 import mg.fita.kinkinasaifu.model.*;
 import mg.fita.kinkinasaifu.repositories.*;
-import mg.fita.kinkinasaifu.services.*;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -61,7 +60,8 @@ public class TransactionService {
                 "Transfer to " + receiverAccount.getName() + " (" + receiverAccount.getCurrency().getCode() + ")",
                 amount, LocalDateTime.now(),"Debit",
                 senderAccount.getName(),
-                receiverAccount.getName()
+                receiverAccount.getName(),
+                receiverAccount.getCategory()
         );
 
         Transaction receiverTransaction = new Transaction(
@@ -69,7 +69,8 @@ public class TransactionService {
                 "Transfer Received from: " + senderAccount.getName() + " (" + senderAccount.getCurrency().getCode() + ")",
                 convertedAmount, LocalDateTime.now(),"Credit",
                 senderAccount.getName(),
-                receiverAccount.getName()
+                receiverAccount.getName(),
+                receiverAccount.getCategory()
         );
         transactionCrudOperations.save(receiverTransaction);
         transactionCrudOperations.save(senderTransaction);
