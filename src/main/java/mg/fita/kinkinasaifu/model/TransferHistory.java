@@ -9,8 +9,9 @@ import lombok.*;
 @NoArgsConstructor
 @Setter
 public class TransferHistory {
-    private Integer id;
+    private int id;
     private Integer debtorTransferId;
     private Integer creditorTransferId;
+    private Double amount;
     private LocalDateTime transferDateTime;
 }
