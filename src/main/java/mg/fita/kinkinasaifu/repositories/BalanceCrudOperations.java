@@ -20,7 +20,7 @@ public class BalanceCrudOperations {
         "WHERE account_id =?";
     private static final String SAVE_BALANCE_QUERY = "INSERT INTO \"balance\" " +
         "(account_id, value, modification_date) VALUES (?, ?, ?)";
-    public Balance findMostRecentBalance(int account_id) {
+    public Balance findMostRecentBalance(int account_id) throws SQLException{
         Balance balance = null;
         try (PreparedStatement statement = connection.prepareStatement(FIND_MOST_RECENT_BALANCE_BY_ACCOUNT_ID_QUERY)) {
             statement.setInt(1, account_id);
@@ -32,13 +32,11 @@ public class BalanceCrudOperations {
                             .getTimestamp(ColumnLabel.BalanceTable.MODIFICATION_DATE).toLocalDateTime());
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
         return balance;
     }
 
-    public List<Balance> findAllByAccountId(int accountId) {
+    public List<Balance> findAllByAccountId(int accountId) throws SQLException{
         List<Balance> balances = new ArrayList<>();
 
         try (PreparedStatement statement = connection.prepareStatement(FIND_ALL_BALANCE_BY_ACCOUNT_ID_QUERY)) {
@@ -49,20 +47,16 @@ public class BalanceCrudOperations {
                     balances.add(mapToBalance(resultSet));
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
 
         return balances;
     }
-    public void saveBalance(Balance balance, int account_id) {
+    public void saveBalance(Balance balance, int account_id) throws SQLException{
         try (PreparedStatement statement = connection.prepareStatement(SAVE_BALANCE_QUERY)) {
             statement.setInt(1, account_id);
             statement.setDouble(2, balance.getValue());
             statement.setTimestamp(3, Timestamp.valueOf(balance.getModificationDate()));
             statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
     private Balance mapToBalance(ResultSet resultSet) throws SQLException {

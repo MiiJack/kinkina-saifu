@@ -76,7 +76,7 @@ public class TransactionCrudOperations{
             statement.setObject(8, transaction.getCategory(), java.sql.Types.OTHER);
             statement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Error occurred while saving transactions", e);
         }
         return transaction;
     }

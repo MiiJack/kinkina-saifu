@@ -15,7 +15,7 @@ public class SumAmountOperations {
         this.connection = ConnectionDB.getConnection();
     }
 
-    public List<SumAmount> calculateSumAmounts(Timestamp startDate, Timestamp endDate, int accountId) {
+    public List<SumAmount> calculateSumAmounts(Timestamp startDate, Timestamp endDate, int accountId) throws SQLException{
         List<SumAmount> sumAmounts = new ArrayList<>();
 
         final String SUM_AMOUNT_QUERY = "SELECT category, COALESCE(SUM(CASE WHEN t.type = 'Credit' THEN t.amount ELSE -t.amount END), 0) AS total_amount " +
@@ -38,14 +38,11 @@ public class SumAmountOperations {
                     sumAmounts.add(sumAmount);
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-
         return sumAmounts;
     }
 
-        public List<SumAmount> calculateMappedSumAmounts(int accountId, LocalDateTime startDate, LocalDateTime endDate) {
+        public List<SumAmount> calculateMappedSumAmounts(int accountId, LocalDateTime startDate, LocalDateTime endDate) throws SQLException{
         List<SumAmount> sumAmounts = new ArrayList<>();
 
         String TRANSACTIONS_BY_DATE_QUERY = "SELECT label, amount, date_time, type FROM transaction " +
@@ -70,10 +67,7 @@ public class SumAmountOperations {
                     sumAmounts.add(sumAmount);
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-
         // Map data and calculate total amounts for each category
         List<SumAmount> mappedSumAmounts = new ArrayList<>();
         for (SumAmount sumAmount : sumAmounts) {

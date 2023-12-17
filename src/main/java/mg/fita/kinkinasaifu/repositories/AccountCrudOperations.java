@@ -19,20 +19,18 @@ public class AccountCrudOperations{
     private static final String SAVE_QUERY = "INSERT INTO \"account\" (name, type, currency_id) VALUES (?, ?, ?)";
     /*private static final String DELETE_QUERY = "DELETE FROM \"account\" WHERE id = ?";*/
 
-    public List<Account> findAll() {
+    public List<Account> findAll() throws SQLException{
         List<Account> accounts = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement(FIND_ALL_QUERY);
              ResultSet resultSet = statement.executeQuery()) {
             while (resultSet.next()) {
                 accounts.add(mapToAccount(resultSet));
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
         return accounts;
     }
 
-    public Account findById(int id) {
+    public Account findById(int id) throws SQLException {
         Account account = null;
         try (PreparedStatement statement = connection.prepareStatement(FIND_BY_ID_QUERY)) {
             statement.setInt(1, id);
@@ -41,8 +39,6 @@ public class AccountCrudOperations{
                     account = mapToAccount(resultSet);
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
         return account;
     }
@@ -54,7 +50,7 @@ public class AccountCrudOperations{
             statement.setInt(3, account.getCurrency().getId());
             statement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Error occurred while saving account", e);
         }
         return account;
     }

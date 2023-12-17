@@ -3,6 +3,7 @@ package mg.fita.kinkinasaifu.services;
 import mg.fita.kinkinasaifu.model.*;
 import mg.fita.kinkinasaifu.repositories.*;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ public class BalanceService {
     TransactionCrudOperations transactionCrudOperations = new TransactionCrudOperations();
     TransferHistoryCrudOperations transferHistoryCrudOperations = new TransferHistoryCrudOperations();
     OtherCrudOperations otherCrudOperations = new OtherCrudOperations();
-    public Balance getBalanceAtDateTime(Account account, LocalDateTime dateTime) {
+    public Balance getBalanceAtDateTime(Account account, LocalDateTime dateTime) throws SQLException {
         List<Balance> balances = balanceCrudOperations.findAllByAccountId(account.getId());
         for (int i = 0; i < balances.size(); i++) {
             if (balances.get(i).getModificationDate().isAfter(dateTime)) {
@@ -25,7 +26,7 @@ public class BalanceService {
         return balances.get(balances.size() - 1);
     }
 
-    public List<Balance> getBalanceHistory(Account account, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+    public List<Balance> getBalanceHistory(Account account, LocalDateTime startDateTime, LocalDateTime endDateTime) throws SQLException {
         List<Balance> balances = balanceCrudOperations.findAllByAccountId(account.getId());
 
         return balances.stream()
@@ -33,7 +34,7 @@ public class BalanceService {
             .collect(Collectors.toList());
     }
     private static Transaction latestTransaction;
-    public double getBalanceSummary(int accountId, LocalDateTime date, BalanceSummaryType type) {
+    public double getBalanceSummary(int accountId, LocalDateTime date, BalanceSummaryType type) throws SQLException {
         double totalBalance = 0.0;
         double totalWeight = 0.0;
         Transaction latestTransaction = transactionService.findLatestTransaction(accountId, date);

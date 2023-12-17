@@ -3,6 +3,7 @@ package mg.fita.kinkinasaifu.services;
 import mg.fita.kinkinasaifu.model.*;
 import mg.fita.kinkinasaifu.repositories.*;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -16,7 +17,7 @@ public class TransactionService {
     TransferHistoryCrudOperations transferHistoryCrudOperations = new TransferHistoryCrudOperations();
     AccountService accountService = new AccountService();
 
-    public Transaction findLatestTransaction(int accountId, LocalDateTime date) {
+    public Transaction findLatestTransaction(int accountId, LocalDateTime date){
         List<Transaction> transactions = transactionCrudOperations.findAllByAccountId(accountId);
         if (transactions.isEmpty()) {
             return null;
@@ -34,7 +35,7 @@ public class TransactionService {
         return findLatestTransaction(accountId, null);
     }
 
-    public void transferMoney(Account senderAccount, Account receiverAccount, double amount) {
+    public void transferMoney(Account senderAccount, Account receiverAccount, double amount) throws SQLException {
         if (senderAccount.getId() == receiverAccount.getId()) {
             throw new IllegalArgumentException("Cannot transfer money to the same account");
         }

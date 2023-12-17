@@ -19,19 +19,17 @@ public class TransferHistoryCrudOperations {
             "(debtor_transaction_id, creditor_transaction_id , transfer_date_time) VALUES (?, ?, ?)";
     private static final String FIND_ALL_TRANSFER_HISTORY_WITHIN_RANGE = "SELECT * FROM \"transfer_history\" " +
             "WHERE transfer_date_time >= ? AND transfer_date_time < ?";
-    public TransferHistory save(TransferHistory transferHistory) {
+    public TransferHistory save(TransferHistory transferHistory) throws SQLException{
         try (PreparedStatement statement = connection.prepareStatement(SAVE_TRANSFER_HISTORY)) {
             statement.setInt(1, transferHistory.getDebtorTransferId());
             statement.setInt(2, transferHistory.getCreditorTransferId());
             statement.setTimestamp(3, java.sql.Timestamp.valueOf(transferHistory.getTransferDateTime()));
             statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
         return transferHistory;
     }
 
-    public List<TransferHistory> findAllWithinRange(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+    public List<TransferHistory> findAllWithinRange(LocalDateTime startDateTime, LocalDateTime endDateTime) throws SQLException {
         List<TransferHistory> transferHistories = new ArrayList<>();
         try (PreparedStatement statement = connection
                 .prepareStatement(FIND_ALL_TRANSFER_HISTORY_WITHIN_RANGE)) {
@@ -50,8 +48,6 @@ public class TransferHistoryCrudOperations {
                     transferHistories.add(transferHistory);
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
         return transferHistories;
     }

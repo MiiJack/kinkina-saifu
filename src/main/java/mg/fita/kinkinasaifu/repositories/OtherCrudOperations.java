@@ -14,7 +14,7 @@ public class OtherCrudOperations {
     private static final String GET_MOST_RECENT_CURRENCY_VALUE = "SELECT value FROM \"currency_value\" WHERE source_currency_id = ? " +
         "AND target_currency_id = ? ORDER BY effective_date LIMIT 1";
 
-    public Currency findById(int id) {
+    public Currency findById(int id) throws SQLException{
         Currency currency = null;
         try (PreparedStatement statement = connection.prepareStatement(FIND_CURRENCY_BY_ID_QUERY)) {
             statement.setInt(1, id);
@@ -27,13 +27,11 @@ public class OtherCrudOperations {
                     );
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
         return currency;
     }
 
-     public double getCurrencyValue (int sourceCurrencyId, int targetCurrencyId) {
+     public double getCurrencyValue (int sourceCurrencyId, int targetCurrencyId) throws SQLException{
          double currencyValue = 0.0;
          try (PreparedStatement statement = connection.prepareStatement(GET_MOST_RECENT_CURRENCY_VALUE)) {
              statement.setInt(1, sourceCurrencyId);
@@ -43,8 +41,6 @@ public class OtherCrudOperations {
                      currencyValue = resultSet.getDouble(ColumnLabel.CurrencyValueTable.VALUE);
                  }
              }
-         } catch (SQLException e) {
-             e.printStackTrace();
          }
          return currencyValue;
      }
