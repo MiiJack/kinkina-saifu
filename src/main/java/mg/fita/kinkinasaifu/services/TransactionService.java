@@ -1,6 +1,5 @@
 package mg.fita.kinkinasaifu.services;
 
-import jakarta.annotation.Nullable;
 import mg.fita.kinkinasaifu.model.*;
 import mg.fita.kinkinasaifu.repositories.*;
 
@@ -17,7 +16,7 @@ public class TransactionService {
     TransferHistoryCrudOperations transferHistoryCrudOperations = new TransferHistoryCrudOperations();
     AccountService accountService = new AccountService();
 
-    public Transaction findLatestTransaction(int accountId, @Nullable LocalDateTime date) {
+    public Transaction findLatestTransaction(int accountId, LocalDateTime date) {
         List<Transaction> transactions = transactionCrudOperations.findAllByAccountId(accountId);
         if (transactions.isEmpty()) {
             return null;
