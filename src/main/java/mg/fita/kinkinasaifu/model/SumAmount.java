@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode
 public class SumAmount {
-    private String category;
-    private double totalAmount;
+  private String category;
+  private double totalAmount;
 }

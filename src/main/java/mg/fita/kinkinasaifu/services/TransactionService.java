@@ -1,93 +1,108 @@
 package mg.fita.kinkinasaifu.services;
 
-import mg.fita.kinkinasaifu.model.*;
-import mg.fita.kinkinasaifu.repositories.*;
-
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.*;
+import mg.fita.kinkinasaifu.model.*;
+import mg.fita.kinkinasaifu.repositories.*;
 
 public class TransactionService {
-    OtherCrudOperations otherCrudOperations = new OtherCrudOperations();
-    BalanceCrudOperations balanceCrudOperations = new BalanceCrudOperations();
-    AccountCrudOperations accountCrudOperations = new AccountCrudOperations();
+  OtherCrudOperations otherCrudOperations = new OtherCrudOperations();
+  BalanceCrudOperations balanceCrudOperations = new BalanceCrudOperations();
+  AccountCrudOperations accountCrudOperations = new AccountCrudOperations();
 
-    TransactionCrudOperations transactionCrudOperations = new TransactionCrudOperations();
+  TransactionCrudOperations transactionCrudOperations = new TransactionCrudOperations();
 
-    TransferHistoryCrudOperations transferHistoryCrudOperations = new TransferHistoryCrudOperations();
-    AccountService accountService = new AccountService();
+  TransferHistoryCrudOperations transferHistoryCrudOperations = new TransferHistoryCrudOperations();
+  AccountService accountService = new AccountService();
 
-    public Transaction findLatestTransaction(int accountId, LocalDateTime date){
-        List<Transaction> transactions = transactionCrudOperations.findAllByAccountId(accountId);
-        if (transactions.isEmpty()) {
-            return null;
-        }
-        if (date == null) {
-            return Collections.max(transactions, Comparator.comparingInt(Transaction::getId));
-        }
-        return transactions.stream()
-                .filter(transaction -> transaction.getDateTime().toLocalDate().equals(date.toLocalDate()))
-                .max(Comparator.comparing(Transaction::getDateTime))
-                .orElse(null);
+  public Transaction findLatestTransaction(int accountId, LocalDateTime date) {
+    List<Transaction> transactions = transactionCrudOperations.findAllByAccountId(accountId);
+    if (transactions.isEmpty()) {
+      return null;
+    }
+    if (date == null) {
+      return Collections.max(transactions, Comparator.comparingInt(Transaction::getId));
+    }
+    return transactions.stream()
+        .filter(transaction -> transaction.getDateTime().toLocalDate().equals(date.toLocalDate()))
+        .max(Comparator.comparing(Transaction::getDateTime))
+        .orElse(null);
+  }
+
+  public Transaction findLatestTransaction(int accountId) {
+    return findLatestTransaction(accountId, null);
+  }
+
+  public void transferMoney(Account senderAccount, Account receiverAccount, double amount)
+      throws SQLException {
+    if (senderAccount.getId() == receiverAccount.getId()) {
+      throw new IllegalArgumentException("Cannot transfer money to the same account");
+    }
+    if (senderAccount.getBalance().getValue() < amount) {
+      throw new IllegalArgumentException("Insufficient funds for sender account");
+    }
+    double convertedAmount = amount;
+    if (!senderAccount.getCurrency().getCode().equals(receiverAccount.getCurrency().getCode())) {
+      double conversionRate =
+          otherCrudOperations.getCurrencyValue(
+              senderAccount.getCurrency().getId(), receiverAccount.getCurrency().getId());
+      convertedAmount = amount * conversionRate;
     }
 
-    public Transaction findLatestTransaction(int accountId) {
-        return findLatestTransaction(accountId, null);
-    }
+    Transaction latestSenderTransaction = findLatestTransaction(senderAccount.getId());
+    Transaction latestReceiverTransaction = findLatestTransaction(receiverAccount.getId());
 
-    public void transferMoney(Account senderAccount, Account receiverAccount, double amount) throws SQLException {
-        if (senderAccount.getId() == receiverAccount.getId()) {
-            throw new IllegalArgumentException("Cannot transfer money to the same account");
-        }
-        if (senderAccount.getBalance().getValue() < amount) {
-            throw new IllegalArgumentException("Insufficient funds for sender account");
-        }
-        double convertedAmount = amount;
-        if (!senderAccount.getCurrency().getCode().equals(receiverAccount.getCurrency().getCode())) {
-            double conversionRate = otherCrudOperations.getCurrencyValue(senderAccount.getCurrency().getId(),
-                    receiverAccount.getCurrency().getId());
-            convertedAmount = amount * conversionRate;
-        }
+    int nextSenderTransactionId =
+        latestSenderTransaction == null ? 1 : latestSenderTransaction.getId() + 1;
+    int nextReceiverTransactionId =
+        latestReceiverTransaction == null ? 1 : latestReceiverTransaction.getId() + 1;
 
-        Transaction latestSenderTransaction = findLatestTransaction(senderAccount.getId());
-        Transaction latestReceiverTransaction = findLatestTransaction(receiverAccount.getId());
+    Balance senderBalance = senderAccount.getBalance();
+    senderBalance.setValue(senderBalance.getValue() - convertedAmount);
+    balanceCrudOperations.saveBalance(senderBalance, senderAccount.getId());
 
-        int nextSenderTransactionId = latestSenderTransaction == null ? 1 : latestSenderTransaction.getId() + 1;
-        int nextReceiverTransactionId = latestReceiverTransaction == null ? 1 : latestReceiverTransaction.getId() + 1;
+    TransferHistory transferHistory = new TransferHistory();
+    transferHistory.setDebtorTransferId(senderAccount.getTransactions().size() + 1);
+    transferHistory.setCreditorTransferId(receiverAccount.getTransactions().size() + 1);
+    transferHistory.setAmount(convertedAmount);
+    transferHistoryCrudOperations.save(transferHistory);
 
-        Balance senderBalance = senderAccount.getBalance();
-        senderBalance.setValue(senderBalance.getValue() - convertedAmount);
-        balanceCrudOperations.saveBalance(senderBalance, senderAccount.getId());
+    Transaction senderTransaction =
+        new Transaction(
+            nextSenderTransactionId,
+            "Transfer to "
+                + receiverAccount.getName()
+                + " ("
+                + receiverAccount.getCurrency().getCode()
+                + ")",
+            amount,
+            LocalDateTime.now(),
+            "Debit",
+            senderAccount.getName(),
+            receiverAccount.getName(),
+            receiverAccount.getCategory());
 
-        TransferHistory transferHistory = new TransferHistory();
-        transferHistory.setDebtorTransferId(senderAccount.getTransactions().size() + 1);
-        transferHistory.setCreditorTransferId(receiverAccount.getTransactions().size() + 1);
-        transferHistory.setAmount(convertedAmount);
-        transferHistoryCrudOperations.save(transferHistory);
+    Transaction receiverTransaction =
+        new Transaction(
+            nextReceiverTransactionId,
+            "Transfer Received from: "
+                + senderAccount.getName()
+                + " ("
+                + senderAccount.getCurrency().getCode()
+                + ")",
+            convertedAmount,
+            LocalDateTime.now(),
+            "Credit",
+            senderAccount.getName(),
+            receiverAccount.getName(),
+            receiverAccount.getCategory());
+    transactionCrudOperations.save(receiverTransaction);
+    transactionCrudOperations.save(senderTransaction);
 
-        Transaction senderTransaction = new Transaction(
-                nextSenderTransactionId,
-                "Transfer to " + receiverAccount.getName() + " (" + receiverAccount.getCurrency().getCode() + ")",
-                amount, LocalDateTime.now(),"Debit",
-                senderAccount.getName(),
-                receiverAccount.getName(),
-                receiverAccount.getCategory()
-        );
+    receiverAccount.getTransactions().add(receiverTransaction);
 
-        Transaction receiverTransaction = new Transaction(
-                nextReceiverTransactionId,
-                "Transfer Received from: " + senderAccount.getName() + " (" + senderAccount.getCurrency().getCode() + ")",
-                convertedAmount, LocalDateTime.now(),"Credit",
-                senderAccount.getName(),
-                receiverAccount.getName(),
-                receiverAccount.getCategory()
-        );
-        transactionCrudOperations.save(receiverTransaction);
-        transactionCrudOperations.save(senderTransaction);
-
-        receiverAccount.getTransactions().add(receiverTransaction);
-
-        senderAccount.getBalance().setValue(senderBalance.getValue());
-        accountCrudOperations.save(senderAccount);
-    }
+    senderAccount.getBalance().setValue(senderBalance.getValue());
+    accountCrudOperations.save(senderAccount);
+  }
 }
