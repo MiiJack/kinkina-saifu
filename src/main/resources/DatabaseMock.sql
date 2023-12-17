@@ -27,9 +27,9 @@ INSERT INTO "balance" (account_id, modification_date, value) VALUES
     (5, '2023-12-01 18:20:15', 5000.00);
 
 -- Mock data for transactions
-INSERT INTO "transaction" (label, amount, date_time, type, sender, receiver) VALUES
-    ('Expense A', 50.00,  '2023-11-01 20:37:02', 'Debit', 'Andy', 'Vendor A'),
-    ('Salary Deposit', 2000.00, '2023-03-01 12:21:05', 'Credit', 'Company B', 'Don Smokilla'),
-    ('Expense B', 100.00, '2023-03-01 03:04:01', 'Debit', 'Charlie Brown', 'Vendor B'),
-    ('Transfer C', 500.00, '2023-12-01 06:30:30', 'Debit','Deil Delta', 'Everbridge Vitas'),
-    ('Expense D', 150.00,  '2023-12-01 18:20:15', 'Debit','Everbridge Vitas', 'Vendor C');
+INSERT INTO "transaction" (label, amount, date_time, type, sender, receiver, category) VALUES
+    ('Expense A', 50.00,  '2023-11-01 20:37:02', 'Debit', 'Andy', 'Vendor A','FOOD_DRINKS'),
+    ('Salary Deposit', 2000.00, '2023-03-01 12:21:05', 'Credit', 'Company B', 'Don Smokilla','UNKNOWN'),
+    ('Expense B', 100.00, '2023-03-01 03:04:01', 'Debit', 'Charlie Brown', 'Vendor B','LIFE_ENTERTAINMENT'),
+    ('Transfer C', 500.00, '2023-12-01 06:30:30', 'Debit','Deil Delta', 'Everbridge Vitas','INCOME'),
+    ('Expense D', 150.00,  '2023-12-01 18:20:15', 'Debit','Everbridge Vitas', 'Vendor C','FINANCIAL_EXPENSES');

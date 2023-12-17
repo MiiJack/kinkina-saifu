@@ -13,8 +13,8 @@ public class TransactionCrudOperations{
     }
     private static final String FIND_ALL_QUERY = "SELECT * FROM transaction";
     private static final String FIND_BY_ID_QUERY = "SELECT * FROM transaction WHERE id = ?";
-    private static final String SAVE_QUERY = "INSERT INTO transaction (id, label, amount, type, date_time, sender, receiver)" +
-            " VALUES (?, ?, ?, ?, ?, ?, ?)";
+    private static final String SAVE_QUERY = "INSERT INTO transaction (id, label, amount, type, date_time, sender, receiver, category)" +
+            " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String DELETE_QUERY = "DELETE FROM transaction WHERE id = ?";
     private static final String FIND_ALL_BY_ACCOUNT_ID_QUERY = "SELECT * FROM transaction WHERE id =?";
 
@@ -73,6 +73,7 @@ public class TransactionCrudOperations{
             statement.setTimestamp(5, java.sql.Timestamp.valueOf(transaction.getDateTime()));
             statement.setString(6, transaction.getSender());
             statement.setString(7, transaction.getReceiver());
+            statement.setObject(8, transaction.getCategory(), java.sql.Types.OTHER);
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -103,8 +104,9 @@ public class TransactionCrudOperations{
             resultSet.getString(ColumnLabel.TransactionTable.TYPE),
             resultSet.getString(ColumnLabel.TransactionTable.SENDER),
             resultSet.getString(ColumnLabel.TransactionTable.RECEIVER),
-            (Category) resultSet.getObject(ColumnLabel.TransactionTable.CATEGORY)
+            Optional.ofNullable(resultSet.getString(ColumnLabel.TransactionTable.CATEGORY))
+                    .map(Category::valueOf)
+                    .orElse(Category.UNKNOWN)
         );
     }
-
 }

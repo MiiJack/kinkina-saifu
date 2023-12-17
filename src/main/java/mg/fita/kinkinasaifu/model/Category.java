@@ -1,6 +1,7 @@
 package mg.fita.kinkinasaifu.model;
 
 public enum Category {
+    UNKNOWN,
     FOOD_DRINKS,
     SHOPPING,
     HOUSING,
@@ -11,6 +12,5 @@ public enum Category {
     FINANCIAL_EXPENSES,
     INVESTMENTS,
     INCOME,
-    OTHERS,
-    UNKNOWN
+    OTHERS
 }
