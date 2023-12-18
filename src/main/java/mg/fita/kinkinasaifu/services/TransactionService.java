@@ -66,6 +66,7 @@ public class TransactionService {
     transferHistory.setDebtorTransferId(senderAccount.getTransactions().size() + 1);
     transferHistory.setCreditorTransferId(receiverAccount.getTransactions().size() + 1);
     transferHistory.setAmount(convertedAmount);
+    transferHistory.setTransferDateTime(LocalDateTime.now());
     transferHistoryCrudOperations.save(transferHistory);
 
     Transaction senderTransaction =
