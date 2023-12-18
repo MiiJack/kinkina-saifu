@@ -53,11 +53,10 @@ public class BalanceService {
     List<TransferHistory> transferHistoryList =
         transferHistoryCrudOperations.findAllWithinRange(
             date.with(LocalTime.MIN), date.with(LocalTime.MAX));
-    if (latestTransaction != null) {
-      latestTransaction = null;
-    }
+    System.out.println(latestTransaction);
     BalanceService.latestTransaction = latestTransaction;
     for (TransferHistory transferHistory : transferHistoryList) {
+      System.out.println(transferHistory);
       double amount = transferHistory.getAmount();
       if (transferHistory.getDebtorTransferId() == latestTransaction.getId()) {
         amount = -amount;
@@ -73,6 +72,9 @@ public class BalanceService {
       amount *= conversionRate;
       totalBalance += amount;
       totalWeight += 1.0;
+      if (latestTransaction != null) {
+        latestTransaction = null;
+      }
     }
 
     switch (type) {

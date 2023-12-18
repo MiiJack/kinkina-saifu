@@ -66,7 +66,6 @@ public class Main {
     balanceCrudOperations.saveBalance(balance2, account2.getId());
 
     System.out.println("TD1");
-    // Create instances of your models
 
     Transaction transaction3 =
         new Transaction(
@@ -101,24 +100,24 @@ public class Main {
         balanceService.getBalanceHistory(
             account, LocalDateTime.now().minusDays(1), LocalDateTime.now().plusDays(1));
     System.out.println("Get Balance History Result: " + balances);
-    //        findMostRecentBalance
+    balanceCrudOperations.findMostRecentBalance(2);
+    System.out.println("Get Most recent balance Result: " + balances);
 
-    //    System.out.println(
-    //        "4. Créer une fonction qui permet de faire un transfert d’argent entre deux comptes");
-    // Test transferMoney
-    //    transactionService.transferMoney(account, account1, 100.0);
-    //    System.out.println("Transfer Money Result: " + account);
-    //    System.out.println(
-    //        "5. Calculer la moyenne pondérée, le minimum, le maximum ou la médian"
-    //            + " de la valeur de l’euro durant cette date");
+    System.out.println(
+        "4. Créer une fonction qui permet de faire un transfert d’argent entre deux comptes");
+    transactionService.transferMoney(account, account1, 100.0);
+    System.out.println("Transfer Money Result: " + account);
 
-    // Test getBalanceSummary
-    //    double summary =
-    //        balanceService.getBalanceSummary(
-    //            account.getId(),
-    //            LocalDateTime.now(),
-    //            BalanceService.BalanceSummaryType.WEIGHTED_AVERAGE);
-    //    System.out.println("Get Balance Summary Result: " + summary);
+//    System.out.println(
+//        "5. Calculer la moyenne pondérée, le minimum, le maximum ou la médian"
+//            + " de la valeur de l’euro durant cette date");
+//
+//    double summary =
+//        balanceService.getBalanceSummary(
+//            account.getId(),
+//            LocalDateTime.now(),
+//            BalanceService.BalanceSummaryType.WEIGHTED_AVERAGE);
+//    System.out.println("Get Balance Summary Result: " + summary);
 
     // Test findAll methods
     List<Account> allAccounts = accountCrudOperations.findAll();
