@@ -47,24 +47,25 @@ public class BalanceService {
 
   public double getBalanceSummary(int accountId, LocalDateTime date, BalanceSummaryType type)
       throws SQLException {
+    if (latestTransaction != null) {
+      latestTransaction = null;
+    }
     double totalBalance = 0.0;
     double totalWeight = 0.0;
     Transaction latestTransaction = transactionService.findLatestTransaction(accountId, date);
     List<TransferHistory> transferHistoryList =
         transferHistoryCrudOperations.findAllWithinRange(
             date.with(LocalTime.MIN), date.with(LocalTime.MAX));
-    System.out.println(latestTransaction);
     BalanceService.latestTransaction = latestTransaction;
     for (TransferHistory transferHistory : transferHistoryList) {
-      System.out.println(transferHistory);
       double amount = transferHistory.getAmount();
       if (transferHistory.getDebtorTransferId() == latestTransaction.getId()) {
         amount = -amount;
       }
       Transaction sourceTransaction =
-          transactionService.findLatestTransaction(transferHistory.getDebtorTransferId(), date);
+          transactionService.findLatestTransaction(transferHistory.getDebtorTransferId());
       Transaction targetTransaction =
-          transactionService.findLatestTransaction(transferHistory.getCreditorTransferId(), date);
+          transactionService.findLatestTransaction(transferHistory.getCreditorTransferId());
       Currency sourceCurrency = otherCrudOperations.findById(sourceTransaction.getId());
       Currency targetCurrency = otherCrudOperations.findById(targetTransaction.getId());
       double conversionRate =
@@ -72,9 +73,6 @@ public class BalanceService {
       amount *= conversionRate;
       totalBalance += amount;
       totalWeight += 1.0;
-      if (latestTransaction != null) {
-        latestTransaction = null;
-      }
     }
 
     switch (type) {

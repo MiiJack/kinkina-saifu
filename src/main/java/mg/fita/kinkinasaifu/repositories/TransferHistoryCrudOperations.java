@@ -48,6 +48,7 @@ public class TransferHistoryCrudOperations {
               resultSet.getInt(ColumnLabel.TransferHistoryTable.DEBTOR_TRANSACTION_ID));
           transferHistory.setCreditorTransferId(
               resultSet.getInt(ColumnLabel.TransferHistoryTable.CREDITOR_TRANSACTION_ID));
+          transferHistory.setAmount(resultSet.getDouble(ColumnLabel.TransferHistoryTable.AMOUNT));
           transferHistory.setTransferDateTime(
               resultSet
                   .getTimestamp(ColumnLabel.TransferHistoryTable.TRANSFER_DATE_TIME)

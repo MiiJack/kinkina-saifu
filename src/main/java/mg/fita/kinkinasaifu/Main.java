@@ -108,16 +108,16 @@ public class Main {
     transactionService.transferMoney(account, account1, 100.0);
     System.out.println("Transfer Money Result: " + account);
 
-//    System.out.println(
-//        "5. Calculer la moyenne pondérée, le minimum, le maximum ou la médian"
-//            + " de la valeur de l’euro durant cette date");
-//
-//    double summary =
-//        balanceService.getBalanceSummary(
-//            account.getId(),
-//            LocalDateTime.now(),
-//            BalanceService.BalanceSummaryType.WEIGHTED_AVERAGE);
-//    System.out.println("Get Balance Summary Result: " + summary);
+    System.out.println(
+        "5. Calculer la moyenne pondérée, le minimum, le maximum ou la médian"
+            + " de la valeur de l’euro durant cette date");
+
+    double summary =
+        balanceService.getBalanceSummary(
+            account.getId(),
+            LocalDateTime.now(),
+            BalanceService.BalanceSummaryType.WEIGHTED_AVERAGE);
+    System.out.println("Get Balance Summary Result: " + summary);
 
     // Test findAll methods
     List<Account> allAccounts = accountCrudOperations.findAll();
