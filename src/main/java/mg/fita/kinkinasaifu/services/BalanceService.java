@@ -18,9 +18,14 @@ public class BalanceService {
 
   public Balance getBalanceAtDateTime(Account account, LocalDateTime dateTime) throws SQLException {
     List<Balance> balances = balanceCrudOperations.findAllByAccountId(account.getId());
+    if (balances.isEmpty()) {
+      return null;
+    }
     for (int i = 0; i < balances.size(); i++) {
       if (balances.get(i).getModificationDate().isAfter(dateTime)) {
-        return balances.get(i - 1);
+        if (i - 1 >= 0) {
+          return balances.get(i - 1);
+        }
       }
     }
     return balances.get(balances.size() - 1);
