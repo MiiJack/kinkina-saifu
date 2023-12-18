@@ -18,6 +18,9 @@ public class Account {
   public void setBalance(Balance balance) {
     this.balance = balance;
   }
+  public List<Transaction> getTransactions() {
+    return new ArrayList<>(transactions);
+  };
 
   public List<Transaction> getTransactions() {
     return new ArrayList<>(transactions);
