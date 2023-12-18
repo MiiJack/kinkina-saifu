@@ -12,14 +12,14 @@ public class TransactionCrudOperations {
     this.connection = ConnectionDB.getConnection();
   }
 
-  private static final String FIND_ALL_QUERY = "SELECT * FROM transaction";
-  private static final String FIND_BY_ID_QUERY = "SELECT * FROM transaction WHERE id = ?";
+  private static final String FIND_ALL_QUERY = "SELECT * FROM \"transaction\"";
+  private static final String FIND_BY_ID_QUERY = "SELECT * FROM \"transaction\" WHERE id = ?";
   private static final String SAVE_QUERY =
-      "INSERT INTO transaction (id, label, amount, type, date_time, sender, receiver, category)"
-          + " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-  private static final String DELETE_QUERY = "DELETE FROM transaction WHERE id = ?";
+      "INSERT INTO \"transaction\" (label, amount, type, date_time, sender, receiver, category)"
+          + " VALUES (?, ?, ?, ?, ?, ?, ?)";
+  private static final String DELETE_QUERY = "DELETE FROM \"transaction\" WHERE id = ?";
   private static final String FIND_ALL_BY_ACCOUNT_ID_QUERY =
-      "SELECT * FROM transaction WHERE id =?";
+      "SELECT * FROM \"transaction\" WHERE id =?";
 
   public List<Transaction> findAll() {
     List<Transaction> transactions = new ArrayList<>();
@@ -69,14 +69,13 @@ public class TransactionCrudOperations {
 
   public Transaction save(Transaction transaction) {
     try (PreparedStatement statement = connection.prepareStatement(SAVE_QUERY)) {
-      statement.setInt(1, transaction.getId());
-      statement.setString(2, transaction.getLabel());
-      statement.setDouble(3, transaction.getAmount());
-      statement.setObject(4, transaction.getTransactionType(), java.sql.Types.OTHER);
-      statement.setTimestamp(5, java.sql.Timestamp.valueOf(transaction.getDateTime()));
-      statement.setString(6, transaction.getSender());
-      statement.setString(7, transaction.getReceiver());
-      statement.setObject(8, transaction.getCategory(), java.sql.Types.OTHER);
+      statement.setString(1, transaction.getLabel());
+      statement.setDouble(2, transaction.getAmount());
+      statement.setObject(3, transaction.getTransactionType(), java.sql.Types.OTHER);
+      statement.setTimestamp(4, java.sql.Timestamp.valueOf(transaction.getDateTime()));
+      statement.setString(5, transaction.getSender());
+      statement.setString(6, transaction.getReceiver());
+      statement.setObject(7, transaction.getCategory(), java.sql.Types.OTHER);
       statement.executeUpdate();
     } catch (SQLException e) {
       throw new RuntimeException("Error occurred while saving transactions", e);

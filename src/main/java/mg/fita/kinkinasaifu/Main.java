@@ -40,8 +40,13 @@ public class Main {
             "Chell",
             "GladOS",
             Category.COMMUNICATION_PC);
+    transactionCrudOperations.save(transaction1);
+
     Account account1 =
         new Account(6, "Savings", balance1, Arrays.asList(transaction1), currency6, "Bank");
+    accountCrudOperations.save(account1);
+    balanceCrudOperations.saveBalance(balance1, account1.getId());
+
     Transaction transaction2 =
         new Transaction(
             7,
@@ -52,9 +57,13 @@ public class Main {
             "null",
             "nullcepter",
             Category.FOOD_DRINKS);
+    transactionCrudOperations.save(transaction2);
+
     Account account2 =
         new Account(
             7, "Current", balance2, Arrays.asList(transaction2, transaction1), currency5, "Cash");
+    accountCrudOperations.save(account2);
+    balanceCrudOperations.saveBalance(balance2, account2.getId());
 
     System.out.println("TD1");
     // Create instances of your models
@@ -73,12 +82,11 @@ public class Main {
             "Bank");
     accountCrudOperations.save(account);
 
-    //    System.out.println("Transfer Money Result: " + account);
-    //    System.out.println(
-    //        "1. Créer une fonction qui permet d’effectuer une transaction dans un compte");
+    System.out.println(
+        "1. Créer une fonction qui permet d’effectuer une transaction dans un compte");
+    Account result = accountService.performTransaction(account, Arrays.asList(transaction3));
+    System.out.println("Perform Transaction Result: " + result);
 
-    //    Account result = accountService.performTransaction(account, Arrays.asList(transaction3));
-    //    System.out.println("Perform Transaction Result: " + result);
     System.out.println(
         "2. Créer une fonction qui permet d’obtenir le solde d’un compte à une date et heure"
             + " donnée");
@@ -94,28 +102,23 @@ public class Main {
             account, LocalDateTime.now().minusDays(1), LocalDateTime.now().plusDays(1));
     System.out.println("Get Balance History Result: " + balances);
     //        findMostRecentBalance
+
     //    System.out.println(
     //        "4. Créer une fonction qui permet de faire un transfert d’argent entre deux comptes");
     // Test transferMoney
     //    transactionService.transferMoney(account, account1, 100.0);
+    //    System.out.println("Transfer Money Result: " + account);
     //    System.out.println(
     //        "5. Calculer la moyenne pondérée, le minimum, le maximum ou la médian"
     //            + " de la valeur de l’euro durant cette date");
-    //        // Test getBalanceSummary
+
+    // Test getBalanceSummary
     //    double summary =
     //        balanceService.getBalanceSummary(
     //            account.getId(),
     //            LocalDateTime.now(),
     //            BalanceService.BalanceSummaryType.WEIGHTED_AVERAGE);
     //    System.out.println("Get Balance Summary Result: " + summary);
-
-    // Test save methods
-    //accountCrudOperations.save(account1);
-    //transactionCrudOperations.save(transaction1);
-    //accountCrudOperations.save(account2);
-    //transactionCrudOperations.save(transaction2);
-    //balanceCrudOperations.saveBalance(balance1, account1.getId());
-    //balanceCrudOperations.saveBalance(balance2, account2.getId());
 
     // Test findAll methods
     List<Account> allAccounts = accountCrudOperations.findAll();
