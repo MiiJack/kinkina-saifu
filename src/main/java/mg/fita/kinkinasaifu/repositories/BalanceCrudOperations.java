@@ -8,7 +8,7 @@ import mg.fita.kinkinasaifu.connection.ConnectionDB;
 import mg.fita.kinkinasaifu.model.*;
 
 public class BalanceCrudOperations {
-  private Connection connection;
+  private final Connection connection;
 
   public BalanceCrudOperations() {
     this.connection = ConnectionDB.getConnection();

@@ -5,7 +5,7 @@ import mg.fita.kinkinasaifu.connection.ConnectionDB;
 import mg.fita.kinkinasaifu.model.*;
 
 public class OtherCrudOperations {
-  private Connection connection;
+  private final Connection connection;
 
   public OtherCrudOperations() {
     this.connection = ConnectionDB.getConnection();

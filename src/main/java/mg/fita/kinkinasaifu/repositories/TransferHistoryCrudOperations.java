@@ -9,15 +9,15 @@ import mg.fita.kinkinasaifu.model.ColumnLabel;
 import mg.fita.kinkinasaifu.model.TransferHistory;
 
 public class TransferHistoryCrudOperations {
-  private Connection connection;
+  private final Connection connection;
 
   public TransferHistoryCrudOperations() {
     this.connection = ConnectionDB.getConnection();
   }
 
   private static final String SAVE_TRANSFER_HISTORY =
-      "INSERT INTO \"transfer_history\"(debtor_transaction_id, creditor_transaction_id ,"
-          + " transfer_date_time) VALUES (?, ?, ?)";
+      "INSERT INTO \"transfer_history\"(debtor_transaction_id, creditor_transaction_id , amount,"
+          + " transfer_date_time) VALUES (?, ?, ?, ?)";
   private static final String FIND_ALL_TRANSFER_HISTORY_WITHIN_RANGE =
       "SELECT * FROM \"transfer_history\" "
           + "WHERE transfer_date_time >= ? AND transfer_date_time < ?";
@@ -26,7 +26,8 @@ public class TransferHistoryCrudOperations {
     try (PreparedStatement statement = connection.prepareStatement(SAVE_TRANSFER_HISTORY)) {
       statement.setInt(1, transferHistory.getDebtorTransferId());
       statement.setInt(2, transferHistory.getCreditorTransferId());
-      statement.setTimestamp(3, java.sql.Timestamp.valueOf(transferHistory.getTransferDateTime()));
+      statement.setDouble(3, transferHistory.getAmount());
+      statement.setTimestamp(4, java.sql.Timestamp.valueOf(transferHistory.getTransferDateTime()));
       statement.executeUpdate();
     }
     return transferHistory;

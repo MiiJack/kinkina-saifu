@@ -8,7 +8,7 @@ import mg.fita.kinkinasaifu.model.ColumnLabel;
 import mg.fita.kinkinasaifu.model.Currency;
 
 public class AccountCrudOperations {
-  private Connection connection;
+  private final Connection connection;
 
   public AccountCrudOperations() {
     this.connection = ConnectionDB.getConnection();
@@ -62,12 +62,10 @@ public class AccountCrudOperations {
     return toSave;
   }
 
-  /*    public void delete(int id) {
+  /*    public void delete(int id) throws SQLException{
       try (PreparedStatement statement = connection.prepareStatement(DELETE_QUERY)) {
           statement.setInt(1, id);
           statement.executeUpdate();
-      } catch (SQLException e) {
-          e.printStackTrace();
       }
   } */
 
