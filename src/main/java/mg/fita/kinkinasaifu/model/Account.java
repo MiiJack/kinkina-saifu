@@ -1,5 +1,6 @@
 package mg.fita.kinkinasaifu.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import lombok.*;
 
@@ -17,6 +18,11 @@ public class Account {
   public void setBalance(Balance balance) {
     this.balance = balance;
   }
+
+  public List<Transaction> getTransactions() {
+    return new ArrayList<>(transactions);
+  }
+  ;
 
   public Category getCategory() {
     return null;
