@@ -22,9 +22,9 @@ public class Account {
     return new ArrayList<>(transactions);
   };
 
-  public List<Transaction> getTransactions() {
-    return new ArrayList<>(transactions);
-  }
+  // public List<Transaction> getTransactions() {
+  //   return new ArrayList<>(transactions);
+  // }
   ;
 
   public Category getCategory() {
