@@ -33,3 +33,11 @@ INSERT INTO "transaction" (label, amount, date_time, type, sender, receiver, cat
     ('Expense B', 100.00, '2023-03-01 03:04:01', 'Debit', 'Charlie Brown', 'Vendor B','LIFE_ENTERTAINMENT'),
     ('Transfer C', 500.00, '2023-12-01 06:30:30', 'Debit','Deil Delta', 'Everbridge Vitas','INCOME'),
     ('Expense D', 150.00,  '2023-12-01 18:20:15', 'Debit','Everbridge Vitas', 'Vendor C','FINANCIAL_EXPENSES');
+
+INSERT INTO account_transaction (account_id, transaction_id) VALUES
+    (1, 1),
+    (1, 2),
+    (1, 3),
+    (2, 4),
+    (2, 5),
+    (2, 6);
