@@ -19,16 +19,16 @@ public class SumAmountOperations {
           + "JOIN account_transaction ON transaction.id = account_transaction.transaction_id "
           + "WHERE account_transaction.account_id = ? AND date_time BETWEEN ? AND ?";
 
+  private final String SUM_AMOUNT_QUERY =
+      "SELECT category, COALESCE(SUM(CASE WHEN t.type = 'Credit' THEN t.amount ELSE -t.amount"
+          + " END), 0) AS total_amount FROM (SELECT DISTINCT label AS category FROM transaction)"
+          + " categories LEFT JOIN transaction t ON categories.category = t.label AND t.date_time"
+          + " BETWEEN ? AND ? AND EXISTS (SELECT 1 FROM account_transaction at WHERE"
+          + " at.account_id = ? AND at.transaction_id = t.id) GROUP BY category";
+
   public List<SumAmount> calculateSumAmounts(Timestamp startDate, Timestamp endDate, int accountId)
       throws SQLException {
     List<SumAmount> sumAmounts = new ArrayList<>();
-
-    final String SUM_AMOUNT_QUERY =
-        "SELECT category, COALESCE(SUM(CASE WHEN t.type = 'Credit' THEN t.amount ELSE -t.amount"
-            + " END), 0) AS total_amount FROM (SELECT DISTINCT label AS category FROM transaction)"
-            + " categories LEFT JOIN transaction t ON categories.category = t.label AND t.date_time"
-            + " BETWEEN ? AND ? AND EXISTS (SELECT 1 FROM account_transaction at WHERE"
-            + " at.account_id = ? AND at.transaction_id = t.id) GROUP BY category";
 
     try (PreparedStatement statement = connection.prepareStatement(SUM_AMOUNT_QUERY)) {
       statement.setTimestamp(1, startDate);

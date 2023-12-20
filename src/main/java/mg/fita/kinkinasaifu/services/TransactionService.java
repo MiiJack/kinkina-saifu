@@ -18,9 +18,6 @@ public class TransactionService {
 
   public Transaction findLatestTransaction(int accountId, LocalDateTime date) {
     List<Transaction> transactions = transactionCrudOperations.findAllByAccountId(accountId);
-    if (transactions.isEmpty()) {
-      return null;
-    }
     if (date == null) {
       return Collections.max(transactions, Comparator.comparingInt(Transaction::getId));
     }
@@ -47,6 +44,11 @@ public class TransactionService {
       double conversionRate =
           otherCrudOperations.getCurrencyValue(
               senderAccount.getCurrency().getId(), receiverAccount.getCurrency().getId());
+
+      conversionRate =
+          (Double.isNaN(conversionRate) || Double.isInfinite(conversionRate))
+              ? 0.0
+              : conversionRate;
       convertedAmount = amount * conversionRate;
     }
 

@@ -6,7 +6,6 @@ import lombok.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
 public class TransferHistory {
   private int id;
   private Integer debtorTransferId;

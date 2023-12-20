@@ -56,7 +56,6 @@ public class BalanceService {
     List<TransferHistory> transferHistoryList =
         transferHistoryCrudOperations.findAllWithinRange(
             date.with(LocalTime.MIN), date.with(LocalTime.MAX));
-    BalanceService.latestTransaction = latestTransaction;
     for (TransferHistory transferHistory : transferHistoryList) {
       double amount = transferHistory.getAmount();
       if (transferHistory.getDebtorTransferId() == latestTransaction.getId()) {
