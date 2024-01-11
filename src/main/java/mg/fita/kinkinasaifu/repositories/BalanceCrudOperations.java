@@ -21,11 +21,11 @@ public class BalanceCrudOperations {
   private static final String SAVE_BALANCE_QUERY =
       "INSERT INTO \"balance\" " + "(account_id, value, modification_date) VALUES (?, ?, ?)";
 
-  public Balance findMostRecentBalance(int account_id) throws SQLException {
+  public Balance findMostRecentBalance(long account_id) throws SQLException {
     Balance balance = null;
     try (PreparedStatement statement =
         connection.prepareStatement(FIND_MOST_RECENT_BALANCE_BY_ACCOUNT_ID_QUERY)) {
-      statement.setInt(1, account_id);
+      statement.setLong(1, account_id);
       try (ResultSet resultSet = statement.executeQuery()) {
         if (resultSet.next()) {
           balance = new Balance();
@@ -38,12 +38,12 @@ public class BalanceCrudOperations {
     return balance;
   }
 
-  public List<Balance> findAllByAccountId(int accountId) throws SQLException {
+  public List<Balance> findAllByAccountId(long accountId) throws SQLException {
     List<Balance> balances = new ArrayList<>();
 
     try (PreparedStatement statement =
         connection.prepareStatement(FIND_ALL_BALANCE_BY_ACCOUNT_ID_QUERY)) {
-      statement.setInt(1, accountId);
+      statement.setLong(1, accountId);
 
       try (ResultSet resultSet = statement.executeQuery()) {
         while (resultSet.next()) {
@@ -55,9 +55,9 @@ public class BalanceCrudOperations {
     return balances;
   }
 
-  public void saveBalance(Balance balance, int account_id) throws SQLException {
+  public void saveBalance(Balance balance, long account_id) throws SQLException {
     try (PreparedStatement statement = connection.prepareStatement(SAVE_BALANCE_QUERY)) {
-      statement.setInt(1, account_id);
+      statement.setLong(1, account_id);
       statement.setDouble(2, balance.getValue());
       statement.setTimestamp(3, Timestamp.valueOf(balance.getModificationDate()));
       statement.executeUpdate();
@@ -66,6 +66,7 @@ public class BalanceCrudOperations {
 
   private Balance mapToBalance(ResultSet resultSet) throws SQLException {
     return new Balance(
+        resultSet.getLong(ColumnLabel.BalanceTable.ID),
         resultSet.getDouble(ColumnLabel.BalanceTable.VALUE),
         resultSet.getTimestamp(ColumnLabel.BalanceTable.MODIFICATION_DATE).toLocalDateTime());
   }

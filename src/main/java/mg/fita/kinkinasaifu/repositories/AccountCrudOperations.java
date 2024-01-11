@@ -32,10 +32,10 @@ public class AccountCrudOperations {
     return accounts;
   }
 
-  public Account findById(int id) throws SQLException {
+  public Account findById(long id) throws SQLException {
     Account account = null;
     try (PreparedStatement statement = connection.prepareStatement(FIND_BY_ID_QUERY)) {
-      statement.setInt(1, id);
+      statement.setLong(1, id);
       try (ResultSet resultSet = statement.executeQuery()) {
         if (resultSet.next()) {
           account = mapToAccount(resultSet);
@@ -49,7 +49,7 @@ public class AccountCrudOperations {
     try (PreparedStatement statement = connection.prepareStatement(SAVE_QUERY)) {
       statement.setObject(1, account.getName(), java.sql.Types.OTHER);
       statement.setObject(2, account.getType(), java.sql.Types.OTHER);
-      statement.setInt(3, account.getCurrency().getId());
+      statement.setLong(3, account.getCurrency().getId());
       statement.executeUpdate();
     } catch (SQLException e) {
       throw new RuntimeException("Error occurred while saving account", e);
@@ -62,9 +62,9 @@ public class AccountCrudOperations {
     return toSave;
   }
 
-  /*    public void delete(int id) throws SQLException{
+  /*    public void delete(long id) throws SQLException{
       try (PreparedStatement statement = connection.prepareStatement(DELETE_QUERY)) {
-          statement.setInt(1, id);
+          statement.setLong(1, id);
           statement.executeUpdate();
       }
   } */
@@ -75,15 +75,15 @@ public class AccountCrudOperations {
     TransactionCrudOperations transactionCrudOperations = new TransactionCrudOperations();
 
     Currency currency =
-        otherCrudOperations.findById(resultSet.getInt(ColumnLabel.AccountTable.CURRENCY_ID));
+        otherCrudOperations.findById(resultSet.getLong(ColumnLabel.AccountTable.CURRENCY_ID));
     Balance balance =
-        balanceCrudOperations.findMostRecentBalance(resultSet.getInt(ColumnLabel.AccountTable.ID));
+        balanceCrudOperations.findMostRecentBalance(resultSet.getLong(ColumnLabel.AccountTable.ID));
     List<Transaction> transactions =
         transactionCrudOperations.findAllByAccountId(
-            resultSet.getInt(ColumnLabel.TransactionTable.ID));
+            resultSet.getLong(ColumnLabel.TransactionTable.ID));
 
     return new Account(
-        resultSet.getInt(ColumnLabel.AccountTable.ID),
+        resultSet.getLong(ColumnLabel.AccountTable.ID),
         resultSet.getString(ColumnLabel.AccountTable.NAME),
         balance,
         transactions,

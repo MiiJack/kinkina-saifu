@@ -26,14 +26,14 @@ public class SumAmountOperations {
           + " BETWEEN ? AND ? AND EXISTS (SELECT 1 FROM account_transaction at WHERE"
           + " at.account_id = ? AND at.transaction_id = t.id) GROUP BY category";
 
-  public List<SumAmount> calculateSumAmounts(Timestamp startDate, Timestamp endDate, int accountId)
+  public List<SumAmount> calculateSumAmounts(Timestamp startDate, Timestamp endDate, long accountId)
       throws SQLException {
     List<SumAmount> sumAmounts = new ArrayList<>();
 
     try (PreparedStatement statement = connection.prepareStatement(SUM_AMOUNT_QUERY)) {
       statement.setTimestamp(1, startDate);
       statement.setTimestamp(2, endDate);
-      statement.setInt(3, accountId);
+      statement.setLong(3, accountId);
 
       try (ResultSet resultSet = statement.executeQuery()) {
         while (resultSet.next()) {
@@ -48,11 +48,11 @@ public class SumAmountOperations {
   }
 
   public List<SumAmount> calculateMappedSumAmounts(
-      int accountId, LocalDateTime startDate, LocalDateTime endDate) throws SQLException {
+      long accountId, LocalDateTime startDate, LocalDateTime endDate) throws SQLException {
     List<SumAmount> sumAmounts = new ArrayList<>();
 
     try (PreparedStatement statement = connection.prepareStatement(TRANSACTIONS_BY_DATE_QUERY)) {
-      statement.setInt(1, accountId);
+      statement.setLong(1, accountId);
       statement.setTimestamp(2, Timestamp.valueOf(startDate));
       statement.setTimestamp(3, Timestamp.valueOf(endDate));
 

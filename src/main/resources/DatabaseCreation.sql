@@ -1,10 +1,12 @@
+drop database kinkinasaifu;
+
 CREATE DATABASE kinkinasaifu;
 
 \c kinkinasaifu
 
 -- Currencies table
 CREATE TABLE IF NOT EXISTS "currency" (
-    id SERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL UNIQUE,
     code VARCHAR(3) NOT NULL UNIQUE
 );
@@ -15,7 +17,7 @@ CREATE TYPE account_type AS ENUM ('Bank', 'Cash', 'Mobile Money');
 
 -- Accounts table
 CREATE TABLE IF NOT EXISTS "account" (
-    id SERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     name account_name,
     type account_type,
     currency_id INT REFERENCES "currency"(id) ON DELETE SET NULL
@@ -23,10 +25,10 @@ CREATE TABLE IF NOT EXISTS "account" (
 
 -- Balance table
 CREATE TABLE IF NOT EXISTS "balance" (
-    account_id INT REFERENCES "account"(id),
+    id BIGSERIAL primary key,
+    account_id BIGINT REFERENCES "account"(id),
     value DOUBLE PRECISION,
-    modification_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (account_id, modification_date)
+    modification_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Create the 'transaction_type' ENUM type
@@ -34,39 +36,37 @@ CREATE TYPE transaction_type AS ENUM ('Debit', 'Credit');
 
 -- Transactions table
 CREATE TABLE IF NOT EXISTS "transaction" (
-    id SERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     label VARCHAR(255),
     amount DOUBLE PRECISION NOT NULL,
     date_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     type transaction_type,
     sender VARCHAR(255),
-    receiver VARCHAR(255)
+    receiver VARCHAR(255),
+    category VARCHAR(255)
 );
 
 -- Account_Transaction table
 CREATE TABLE IF NOT EXISTS "account_transaction" (
-    account_id INT REFERENCES "account"(id),
-    transaction_id INT REFERENCES "transaction"(id),
+    account_id BIGINT REFERENCES "account"(id),
+    transaction_id BIGINT REFERENCES "transaction"(id),
     PRIMARY KEY (account_id, transaction_id)
 );
 
 -- TransferHistory table
 CREATE TABLE IF NOT EXISTS "transfer_history"(
-    id SERIAL PRIMARY KEY,
-    debtor_transaction_id INT REFERENCES "transaction"(id),
-    creditor_transaction_id INT REFERENCES "transaction"(id),
+    id BIGSERIAL PRIMARY KEY,
+    debtor_transaction_id BIGINT REFERENCES "transaction"(id),
+    creditor_transaction_id BIGINT REFERENCES "transaction"(id),
     amount DOUBLE PRECISION DEFAULT 0,
     transfer_date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- CurrencyValue table
 CREATE TABLE IF NOT EXISTS "currency_value"(
-    id SERIAL PRIMARY KEY,
-    source_currency_id INT REFERENCES "currency"(id),
-    target_currency_id INT REFERENCES "currency"(id),
+    id BIGSERIAL PRIMARY KEY,
+    source_currency_id BIGINT REFERENCES "currency"(id),
+    target_currency_id BIGINT REFERENCES "currency"(id),
     value DOUBLE PRECISION DEFAULT 0,
     effective_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
-ALTER TABLE transaction
-ADD COLUMN category VARCHAR(255);

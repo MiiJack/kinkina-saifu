@@ -15,6 +15,7 @@ public class ColumnLabel {
   }
 
   public class BalanceTable {
+    public static final String ID = "id";
     public static final String ACCOUNT_ID = "account_id";
     public static final String VALUE = "value";
     public static final String MODIFICATION_DATE = "modification_date";

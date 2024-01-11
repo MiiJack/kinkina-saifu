@@ -16,10 +16,10 @@ public class TransactionService {
   TransferHistoryCrudOperations transferHistoryCrudOperations = new TransferHistoryCrudOperations();
   AccountService accountService = new AccountService();
 
-  public Transaction findLatestTransaction(int accountId, LocalDateTime date) {
+  public Transaction findLatestTransaction(long accountId, LocalDateTime date) {
     List<Transaction> transactions = transactionCrudOperations.findAllByAccountId(accountId);
     if (date == null) {
-      return Collections.max(transactions, Comparator.comparingInt(Transaction::getId));
+      return Collections.max(transactions, Comparator.comparingLong(Transaction::getId));
     }
     return transactions.stream()
         .filter(transaction -> transaction.getDateTime().toLocalDate().equals(date.toLocalDate()))
@@ -27,7 +27,7 @@ public class TransactionService {
         .orElse(null);
   }
 
-  public Transaction findLatestTransaction(int accountId) {
+  public Transaction findLatestTransaction(long accountId) {
     return findLatestTransaction(accountId, null);
   }
 
@@ -55,9 +55,9 @@ public class TransactionService {
     Transaction latestSenderTransaction = findLatestTransaction(senderAccount.getId());
     Transaction latestReceiverTransaction = findLatestTransaction(receiverAccount.getId());
 
-    int nextSenderTransactionId =
+    long nextSenderTransactionId =
         latestSenderTransaction == null ? 1 : latestSenderTransaction.getId() + 1;
-    int nextReceiverTransactionId =
+    long nextReceiverTransactionId =
         latestReceiverTransaction == null ? 1 : latestReceiverTransaction.getId() + 1;
 
     Balance senderBalance = senderAccount.getBalance();
@@ -84,7 +84,7 @@ public class TransactionService {
             "Debit",
             senderAccount.getName(),
             receiverAccount.getName(),
-            receiverAccount.getCategory());
+            Category.FINANCIAL_EXPENSES);
 
     Transaction receiverTransaction =
         new Transaction(
@@ -99,7 +99,7 @@ public class TransactionService {
             "Credit",
             senderAccount.getName(),
             receiverAccount.getName(),
-            receiverAccount.getCategory());
+            Category.INCOME);
     transactionCrudOperations.save(receiverTransaction);
     transactionCrudOperations.save(senderTransaction);
 

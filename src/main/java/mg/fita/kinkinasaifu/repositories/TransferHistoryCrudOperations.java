@@ -24,8 +24,8 @@ public class TransferHistoryCrudOperations {
 
   public TransferHistory save(TransferHistory transferHistory) throws SQLException {
     try (PreparedStatement statement = connection.prepareStatement(SAVE_TRANSFER_HISTORY)) {
-      statement.setInt(1, transferHistory.getDebtorTransferId());
-      statement.setInt(2, transferHistory.getCreditorTransferId());
+      statement.setLong(1, transferHistory.getDebtorTransferId());
+      statement.setLong(2, transferHistory.getCreditorTransferId());
       statement.setDouble(3, transferHistory.getAmount());
       statement.setTimestamp(4, java.sql.Timestamp.valueOf(transferHistory.getTransferDateTime()));
       statement.executeUpdate();
@@ -43,11 +43,11 @@ public class TransferHistoryCrudOperations {
       try (ResultSet resultSet = statement.executeQuery()) {
         while (resultSet.next()) {
           TransferHistory transferHistory = new TransferHistory();
-          transferHistory.setId(resultSet.getInt(ColumnLabel.TransferHistoryTable.ID));
+          transferHistory.setId(resultSet.getLong(ColumnLabel.TransferHistoryTable.ID));
           transferHistory.setDebtorTransferId(
-              resultSet.getInt(ColumnLabel.TransferHistoryTable.DEBTOR_TRANSACTION_ID));
+              resultSet.getLong(ColumnLabel.TransferHistoryTable.DEBTOR_TRANSACTION_ID));
           transferHistory.setCreditorTransferId(
-              resultSet.getInt(ColumnLabel.TransferHistoryTable.CREDITOR_TRANSACTION_ID));
+              resultSet.getLong(ColumnLabel.TransferHistoryTable.CREDITOR_TRANSACTION_ID));
           transferHistory.setAmount(resultSet.getDouble(ColumnLabel.TransferHistoryTable.AMOUNT));
           transferHistory.setTransferDateTime(
               resultSet

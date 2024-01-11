@@ -34,10 +34,10 @@ public class TransactionCrudOperations {
     return transactions;
   }
 
-  public Transaction findById(int id) {
+  public Transaction findById(long id) {
     Transaction transaction = null;
     try (PreparedStatement statement = connection.prepareStatement(FIND_BY_ID_QUERY)) {
-      statement.setInt(1, id);
+      statement.setLong(1, id);
       try (ResultSet resultSet = statement.executeQuery()) {
         if (resultSet.next()) {
           transaction = mapToTransaction(resultSet);
@@ -49,11 +49,11 @@ public class TransactionCrudOperations {
     return transaction;
   }
 
-  public List<Transaction> findAllByAccountId(int accountId) {
+  public List<Transaction> findAllByAccountId(long accountId) {
     List<Transaction> transactions = new ArrayList<>();
 
     try (PreparedStatement statement = connection.prepareStatement(FIND_ALL_BY_ACCOUNT_ID_QUERY)) {
-      statement.setInt(1, accountId);
+      statement.setLong(1, accountId);
 
       try (ResultSet resultSet = statement.executeQuery()) {
         while (resultSet.next()) {
@@ -88,9 +88,9 @@ public class TransactionCrudOperations {
     return toSave;
   }
 
-  public void delete(int id) {
+  public void delete(long id) {
     try (PreparedStatement statement = connection.prepareStatement(DELETE_QUERY)) {
-      statement.setInt(1, id);
+      statement.setLong(1, id);
       statement.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
@@ -99,7 +99,7 @@ public class TransactionCrudOperations {
 
   private Transaction mapToTransaction(ResultSet resultSet) throws SQLException {
     return new Transaction(
-        resultSet.getInt(ColumnLabel.TransactionTable.ID),
+        resultSet.getLong(ColumnLabel.TransactionTable.ID),
         resultSet.getString(ColumnLabel.TransactionTable.LABEL),
         resultSet.getDouble(ColumnLabel.TransactionTable.AMOUNT),
         resultSet.getTimestamp(ColumnLabel.TransactionTable.DATE_TIME).toLocalDateTime(),

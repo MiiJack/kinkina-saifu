@@ -45,7 +45,7 @@ public class BalanceService {
 
   private static Transaction latestTransaction;
 
-  public double getBalanceSummary(int accountId, LocalDateTime date, BalanceSummaryType type)
+  public double getBalanceSummary(long accountId, LocalDateTime date, BalanceSummaryType type)
       throws SQLException {
     if (latestTransaction != null) {
       latestTransaction = null;

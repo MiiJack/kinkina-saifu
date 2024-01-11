@@ -27,9 +27,9 @@ public class Main {
     // Create mock data
     Currency currency6 = otherCrudOperations.findById(6);
     Currency currency5 = otherCrudOperations.findById(5);
-    Balance balance1 = new Balance(3500.00, LocalDateTime.now());
-    Balance balance2 = new Balance(200.00, LocalDateTime.now());
-    Balance balance3 = new Balance(200.0, LocalDateTime.now());
+    Balance balance1 = new Balance(5, 3500.00, LocalDateTime.now());
+    Balance balance2 = new Balance(6, 200.00, LocalDateTime.now());
+    Balance balance3 = new Balance(7, 200.0, LocalDateTime.now());
     Transaction transaction1 =
         new Transaction(
             6,

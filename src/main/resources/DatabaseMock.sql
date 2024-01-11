@@ -39,5 +39,4 @@ INSERT INTO account_transaction (account_id, transaction_id) VALUES
     (1, 2),
     (1, 3),
     (2, 4),
-    (2, 5),
-    (2, 6);
+    (2, 5);
