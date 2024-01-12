@@ -1,14 +1,25 @@
 package mg.fita.kinkinasaifu.model;
 
+import mg.fita.kinkinasaifu.annotations.Column;
+import mg.fita.kinkinasaifu.annotations.Id;
+import mg.fita.kinkinasaifu.annotations.Table;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Table
 public class Account {
+  @Id
   private long id;
+  @Column()
   private String name;
+  @Column
   private Balance balance;
+  @Column
   private List<Transaction> transactions;
+  @Column
   private Currency currency;
+  @Column
   private String type;
 
   public Account(

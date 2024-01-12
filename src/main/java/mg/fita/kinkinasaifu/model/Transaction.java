@@ -1,15 +1,28 @@
 package mg.fita.kinkinasaifu.model;
 
+import mg.fita.kinkinasaifu.annotations.Column;
+import mg.fita.kinkinasaifu.annotations.Id;
+import mg.fita.kinkinasaifu.annotations.Table;
+
 import java.time.LocalDateTime;
 
+@Table
 public class Transaction {
+  @Id
   private long id;
+  @Column
   private String label;
+  @Column
   private Double amount;
+  @Column
   private LocalDateTime dateTime;
+  @Column
   private String transactionType;
+  @Column
   private String sender;
+  @Column
   private String receiver;
+  @Column
   private Category category;
 
   public Transaction(
