@@ -2,16 +2,13 @@ package mg.fita.kinkinasaifu.model;
 
 import mg.fita.kinkinasaifu.annotations.Column;
 import mg.fita.kinkinasaifu.annotations.Id;
-import mg.fita.kinkinasaifu.annotations.Table;
+import mg.fita.kinkinasaifu.annotations.Model;
 
-@Table
+@Model
 public class Currency {
-  @Id
-  private long id;
-  @Column
-  private String name;
-  @Column
-  private String code;
+  @Id private long id;
+  @Column private String name;
+  @Column private String code;
 
   public Currency(long id, String name, String code) {
     this.id = id;

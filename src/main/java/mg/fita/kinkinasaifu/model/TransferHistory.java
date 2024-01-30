@@ -1,23 +1,17 @@
 package mg.fita.kinkinasaifu.model;
 
+import java.time.LocalDateTime;
 import mg.fita.kinkinasaifu.annotations.Column;
 import mg.fita.kinkinasaifu.annotations.Id;
-import mg.fita.kinkinasaifu.annotations.Table;
+import mg.fita.kinkinasaifu.annotations.Model;
 
-import java.time.LocalDateTime;
-
-@Table
+@Model
 public class TransferHistory {
-  @Id
-  private long id;
-  @Column
-  private long debtorTransferId;
-  @Column
-  private long creditorTransferId;
-  @Column
-  private Double amount;
-  @Column
-  private LocalDateTime transferDateTime;
+  @Id private long id;
+  @Column private long debtorTransferId;
+  @Column private long creditorTransferId;
+  @Column private Double amount;
+  @Column private LocalDateTime transferDateTime;
 
   public TransferHistory() {}
 

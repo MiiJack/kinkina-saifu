@@ -1,16 +1,13 @@
 package mg.fita.kinkinasaifu.model;
 
-import mg.fita.kinkinasaifu.annotations.Column;
-import mg.fita.kinkinasaifu.annotations.Table;
-
 import java.util.Objects;
+import mg.fita.kinkinasaifu.annotations.Column;
+import mg.fita.kinkinasaifu.annotations.Model;
 
-@Table
+@Model
 public class SumAmount {
-  @Column
-  private String category;
-  @Column
-  private double totalAmount;
+  @Column private String category;
+  @Column private double totalAmount;
 
   public SumAmount(String category, double totalAmount) {
     this.category = category;

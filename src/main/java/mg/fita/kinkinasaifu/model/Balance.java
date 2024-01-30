@@ -1,19 +1,15 @@
 package mg.fita.kinkinasaifu.model;
 
+import java.time.LocalDateTime;
 import mg.fita.kinkinasaifu.annotations.Column;
 import mg.fita.kinkinasaifu.annotations.Id;
-import mg.fita.kinkinasaifu.annotations.Table;
+import mg.fita.kinkinasaifu.annotations.Model;
 
-import java.time.LocalDateTime;
-
-@Table
+@Model
 public class Balance {
-  @Id
-  private long id;
-  @Column
-  private Double value;
-  @Column
-  private LocalDateTime modificationDate;
+  @Id private long id;
+  @Column private Double value;
+  @Column private LocalDateTime modificationDate;
 
   public Balance() {}
 
